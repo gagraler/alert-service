@@ -1,0 +1,58 @@
+{
+  "receiver": "WebHook",
+  "status": "firing",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "rules_test",
+        "container": "grafana",
+        "endpoint": "http",
+        "grafana_folder": "Default",
+        "instance": "10.0.45.205:3000",
+        "job": "grafana",
+        "namespace": "monitoring",
+        "pod": "grafana-f59c687b-5jqvw",
+        "service": "grafana"
+      },
+      "annotations": {},
+      "startsAt": "2024-01-11T16:15:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "http://localhost:3000/alerting/grafana/f7488033-0dd1-4cfb-8bfc-0ef776bbb099/view?orgId=1",
+      "fingerprint": "d7c74f5059ae78ad",
+      "silenceURL": "http://localhost:3000/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Drules_test&matcher=container%3Dgrafana&matcher=endpoint%3Dhttp&matcher=grafana_folder%3DDefault&matcher=instance%3D10.0.45.205%3A3000&matcher=job%3Dgrafana&matcher=namespace%3Dmonitoring&matcher=pod%3Dgrafana-f59c687b-5jqvw&matcher=service%3Dgrafana&orgId=1",
+      "dashboardURL": "",
+      "panelURL": "",
+      "values": {
+        "A": 1,
+        "B": 1,
+        "C": 1
+      },
+      "valueString": "[ var='A' labels={__name__=up, container=grafana, endpoint=http, instance=10.0.45.205:3000, job=grafana, namespace=monitoring, pod=grafana-f59c687b-5jqvw, service=grafana} value=1 ], [ var='B' labels={__name__=up, container=grafana, endpoint=http, instance=10.0.45.205:3000, job=grafana, namespace=monitoring, pod=grafana-f59c687b-5jqvw, service=grafana} value=1 ], [ var='C' labels={__name__=up, container=grafana, endpoint=http, instance=10.0.45.205:3000, job=grafana, namespace=monitoring, pod=grafana-f59c687b-5jqvw, service=grafana} value=1 ]"
+    }
+  ],
+  "groupLabels": {
+    "alertname": "rules_test",
+    "grafana_folder": "Default"
+  },
+  "commonLabels": {
+    "alertname": "rules_test",
+    "container": "grafana",
+    "endpoint": "http",
+    "grafana_folder": "Default",
+    "instance": "10.0.45.205:3000",
+    "job": "grafana",
+    "namespace": "monitoring",
+    "pod": "grafana-f59c687b-5jqvw",
+    "service": "grafana"
+  },
+  "commonAnnotations": {},
+  "externalURL": "http://localhost:3000/",
+  "version": "1",
+  "groupKey": "{}:{alertname=\"rules_test\", grafana_folder=\"Default\"}",
+  "truncatedAlerts": 0,
+  "orgId": 1,
+  "title": "[FIRING:1] rules_test Default (grafana http 10.0.45.205:3000 grafana monitoring grafana-f59c687b-5jqvw grafana)",
+  "state": "alerting",
+  "message": "**Firing**\n\nValue: A=1, B=1, C=1\nLabels:\n - alertname = rules_test\n - container = grafana\n - endpoint = http\n - grafana_folder = Default\n - instance = 10.0.45.205:3000\n - job = grafana\n - namespace = monitoring\n - pod = grafana-f59c687b-5jqvw\n - service = grafana\nAnnotations:\nSource: http://localhost:3000/alerting/grafana/f7488033-0dd1-4cfb-8bfc-0ef776bbb099/view?orgId=1\nSilence: http://localhost:3000/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Drules_test&matcher=container%3Dgrafana&matcher=endpoint%3Dhttp&matcher=grafana_folder%3DDefault&matcher=instance%3D10.0.45.205%3A3000&matcher=job%3Dgrafana&matcher=namespace%3Dmonitoring&matcher=pod%3Dgrafana-f59c687b-5jqvw&matcher=service%3Dgrafana&orgId=1\n"
+}
