@@ -14,7 +14,7 @@ import (
  */
 
 // TransformToLarkHandler 根据alertManager的对象，创建出飞书消息的对象
-func TransformToLarkHandler(notification models.Notification) (larkRequest *models.LarkMessageRequest, err error) {
+func TransformToLarkHandler(notification models.Notification) (larkRequest *models.LarkRequest, err error) {
 	var buffer bytes.Buffer
 
 	// 先拿到分组情况
@@ -27,7 +27,7 @@ func TransformToLarkHandler(notification models.Notification) (larkRequest *mode
 	}
 
 	// 构造出飞书机器人所需的数据结构
-	larkRequest = &models.LarkMessageRequest{
+	larkRequest = &models.LarkRequest{
 		MsgType: "text",
 		Content: models.Content{
 			Text: buffer.String(),

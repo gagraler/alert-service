@@ -17,13 +17,13 @@ type Alert struct {
 }
 
 type Notification struct {
-	Version           string            `json:"version"`
-	GroupKey          string            `json:"groupKey"`
-	Status            string            `json:"status"`
 	Receiver          string            `json:"receiver"`
+	Status            string            `json:"status"`
+	Alerts            []Alert           `json:"alerts"`
 	GroupLabels       map[string]string `json:"groupLabels"`
 	CommonLabels      map[string]string `json:"commonLabels"`
 	CommonAnnotations map[string]string `json:"commonAnnotations"`
 	ExternalURL       string            `json:"externalURL"`
-	Alerts            []Alert           `json:"alerts"`
+	Version           string            `json:"version"`
+	GroupKey          string            `json:"groupKey"`
 }
