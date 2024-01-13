@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/keington/alart-service/internel/controller"
+	"github.com/keington/alart-service/pkg/cfg"
 	"os"
 )
 
@@ -13,8 +14,16 @@ import (
  * @description: 主程序入口
  */
 
-func init() {
+type AlertServiceConfig struct {
+	LarkWebHookUrl string
+}
 
+func init() {
+	config := &AlertServiceConfig{}
+	_, err := cfg.InitCfg("./conf.d", "alertService", "toml", config)
+	if err != nil {
+		os.Exit(0)
+	}
 }
 
 func main() {
