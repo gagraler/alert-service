@@ -19,7 +19,7 @@ import (
 type Config struct {
 }
 
-func InitCfg(path, name, cfgType string, cfg Config) (config Config, err error) {
+func InitCfg(path, name, cfgType string, cfg interface{}) (config interface{}, err error) {
 	vCfg := viper.New()
 	vCfg.AddConfigPath(path)
 	vCfg.SetConfigName(name)
