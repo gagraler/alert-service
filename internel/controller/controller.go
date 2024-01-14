@@ -19,5 +19,6 @@ func InitializeController(r *gin.Engine) {
 
 func controller(r *gin.RouterGroup) {
 
-	r.POST("/alertMessage/hook", AlertManagerWebhookController)
+	r.POST("/alertMessage/hook", AlertMessageWebhookController)
+	r.POST("/alertMessage/persistence", AlertMessagePersistenceController)
 }
