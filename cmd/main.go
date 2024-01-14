@@ -32,7 +32,7 @@ func main() {
 
 	controller.InitializeController(g)
 
-	err := g.Run(":8588")
+	err := g.Run("0.0.0.0:8588")
 	if err != nil {
 		os.Exit(0)
 	}
