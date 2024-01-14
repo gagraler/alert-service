@@ -7,22 +7,40 @@ package models
  * @description: 飞书交互的数据结构
  */
 
-type Content struct {
-	Text string `json:"text"`
+type Title struct {
+	Tag     string `json:"tag"`
+	Content string `json:"content"`
 }
 
-// LarkRequest 飞书机器人支持的POST数据结构
+type Header struct {
+	Title    Title  `json:"title"`
+	Template string `json:"template"`
+}
+
+type Text struct {
+	Content string `json:"content"`
+	Tag     string `json:"tag"`
+}
+
+type Elements struct {
+	Tag  string `json:"tag"`
+	Text Text   `json:"text"`
+}
+
+type Card struct {
+	Header   Header     `json:"header"`
+	Elements []Elements `json:"elements"`
+}
+
+// LarkRequest 飞书机器人支持的数据结构
 type LarkRequest struct {
-	MsgType string  `json:"msg_type"`
-	Content Content `json:"content"`
-}
-
-type Data struct {
+	MsgType string `json:"msg_type"`
+	Card    Card   `json:"card"`
 }
 
 // LarkResponse 响应体相关
 type LarkResponse struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data Data   `json:"data"`
+	Code int      `json:"code"`
+	Msg  string   `json:"msg"`
+	Data struct{} `json:"data"`
 }
