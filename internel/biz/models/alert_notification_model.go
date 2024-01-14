@@ -9,11 +9,23 @@ import "time"
  * @description: 告警通知的数据结构
  */
 
+type Annotations struct {
+	Summary     string `json:"summary"`
+	Description string `json:"description"`
+}
+
 type Alert struct {
 	Labels      map[string]string `json:"labels"`
-	Annotations map[string]string `json:"annotations"`
+	Annotations Annotations       `json:"annotations"`
 	StartsAt    time.Time         `json:"startsAt"`
 	EndsAt      time.Time         `json:"endsAt"`
+}
+
+type CommonLabels struct {
+	Env       string `json:"env"`
+	Level     string `json:"level"`
+	PromQL    string `json:"promql"`
+	AlertType string `json:"alertType"`
 }
 
 type Notification struct {
@@ -21,7 +33,7 @@ type Notification struct {
 	Status            string            `json:"status"`
 	Alerts            []Alert           `json:"alerts"`
 	GroupLabels       map[string]string `json:"groupLabels"`
-	CommonLabels      map[string]string `json:"commonLabels"`
+	CommonLabels      CommonLabels      `json:"commonLabels"`
 	CommonAnnotations map[string]string `json:"commonAnnotations"`
 	ExternalURL       string            `json:"externalURL"`
 	Version           string            `json:"version"`
