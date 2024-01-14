@@ -5,7 +5,7 @@ import "time"
 /**
  * @author: x.gallagher.anderson@gmail.com
  * @time: 2024/1/11 21:43
- * @file: alert_message.go
+ * @file: alert_messag_model.go
  * @description: alert_message
  */
 
