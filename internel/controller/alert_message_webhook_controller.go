@@ -15,14 +15,14 @@ import (
 /**
  * @author: x.gallagher.anderson@gmail.com
  * @time: 2024/1/11 22:24
- * @file: alert_manager_webhook_controller.go
+ * @file: alert_message_webhook_controller.go
  * @description: lark_webhook_router
  */
 
 const LarkRobotURL = "https://open.larksuite.com/open-apis/bot/v2/hook/27562c31-1810-4c08-b2ef-344ad2b99648"
 
-// AlertManagerWebhookController 飞书机器人的路由
-func AlertManagerWebhookController(c *gin.Context) {
+// AlertMessageWebhookController 飞书机器人的路由
+func AlertMessageWebhookController(c *gin.Context) {
 	var notification models.Notification
 
 	err := c.ShouldBindJSON(&notification)
