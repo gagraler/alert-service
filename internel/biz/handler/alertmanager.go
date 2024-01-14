@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"github.com/keington/alartService/internel/biz/models"
+	"github.com/keington/alertService/internel/biz/models"
 	"strings"
 )
 

@@ -1,4 +1,4 @@
-module github.com/keington/alartService
+module github.com/keington/alertService
 
 go 1.21
 
