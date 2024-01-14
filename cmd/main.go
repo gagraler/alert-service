@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/keington/alart-service/internel/controller"
-	"github.com/keington/alart-service/pkg/cfg"
+	"github.com/keington/alartService/internel/controller"
+	"github.com/keington/alartService/pkg/cfg"
 	"os"
 )
 

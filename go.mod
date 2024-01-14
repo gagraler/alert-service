@@ -1,4 +1,4 @@
-module github.com/keington/alart-service
+module github.com/keington/alartService
 
 go 1.21
 
