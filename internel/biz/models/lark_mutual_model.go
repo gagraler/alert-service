@@ -4,7 +4,7 @@ package models
  * @author: x.gallagher.anderson@gmail.com
  * @time: 2024/1/11 21:45
  * @file: lark_mutual_model.go
- * @description: lark_request_message
+ * @description: 飞书交互的数据结构
  */
 
 type Content struct {

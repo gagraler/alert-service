@@ -5,8 +5,8 @@ import "time"
 /**
  * @author: x.gallagher.anderson@gmail.com
  * @time: 2024/1/11 21:43
- * @file: alert_messag_model.go
- * @description: alert_message
+ * @file: alert_notification_model.go
+ * @description: 告警通知的数据结构
  */
 
 type Alert struct {
