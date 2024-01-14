@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/keington/alertService/internel/controller"
 	"github.com/keington/alertService/pkg/cfg"
+	"github.com/keington/alertService/pkg/database"
 	"os"
 )
 
@@ -16,11 +17,17 @@ import (
 
 type AlertServiceConfig struct {
 	LarkWebHookUrl string
+	Database       database.Config
 }
 
 func init() {
 	config := &AlertServiceConfig{}
 	_, err := cfg.InitCfg("./conf.d", "alertService", "toml", config)
+	if err != nil {
+		os.Exit(0)
+	}
+
+	_, err = database.NewDatabase(&config.Database)
 	if err != nil {
 		os.Exit(0)
 	}

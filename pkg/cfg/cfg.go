@@ -32,7 +32,7 @@ func InitCfg(path, name, cfgType string, cfg interface{}) (config interface{}, e
 	// 配置动态改变时，回调函数
 	vCfg.WatchConfig()
 	vCfg.OnConfigChange(func(e fsnotify.Event) {
-		slog.Info("The configuration changes, re -analyze the configuration file: %s", e.Name)
+		slog.Info("The configuration changes, re -analyze the configuration file: ", e.Name)
 		if err := vCfg.Unmarshal(&cfg); err != nil {
 			_ = fmt.Errorf("failed to unmarshal cfg file: %v", err)
 		}
