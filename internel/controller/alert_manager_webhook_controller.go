@@ -9,6 +9,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"time"
 )
 
 /**
@@ -18,7 +19,7 @@ import (
  * @description: lark_webhook_router
  */
 
-const LarkRobotURL = ""
+const LarkRobotURL = "https://open.larksuite.com/open-apis/bot/v2/hook/27562c31-1810-4c08-b2ef-344ad2b99648"
 
 // AlertManagerWebhookController 飞书机器人的路由
 func AlertManagerWebhookController(c *gin.Context) {
@@ -31,19 +32,22 @@ func AlertManagerWebhookController(c *gin.Context) {
 		})
 		return
 	}
-	slog.Info("received AlertManager alarm: %s", notification)
+	slog.Info("received AlertManager alarm: ", notification)
 
 	// 根据alert manager的请求构造飞书消息的请求数据结构
-	larkRequest, _ := handler.TransformToLarkHandler(notification)
+	larkRequest, err := handler.TransformHandler(notification)
+	if err != nil {
+		slog.Error("[ERROR] failed to transform alertManager notification: ", err)
+	}
 
-	// 向飞书服务器发送POST请求，将飞书服务器返回的内容转为对象
+	// 向飞书服务器发送POST请求
 	bytesData, _ := sonic.Marshal(larkRequest)
 	req, _ := http.NewRequest("POST", LarkRobotURL, bytes.NewReader(bytesData))
 	req.Header.Add("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	// 飞书服务器可能通信失败
 	if err != nil {
-		slog.Error("[ERROR] request to lark server failed：%s", err)
+		slog.Error("[ERROR] request to lark server failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -60,7 +64,7 @@ func AlertManagerWebhookController(c *gin.Context) {
 	err = sonic.Unmarshal(body, &larkResponse)
 	// 飞书服务器返回的包可能有问题
 	if err != nil {
-		slog.Error("[ERROR] failed to obtain response from lark server：%s", err)
+		slog.Error("[ERROR] failed to obtain response from lark server: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -68,7 +72,9 @@ func AlertManagerWebhookController(c *gin.Context) {
 	}
 
 	slog.Info("successfully sent message to lark server")
+	timeStamp := time.Now().Local().Format("2006-01-02 15:04:05")
 	c.JSON(http.StatusOK, gin.H{
-		"message": "successful receive alert notification message!",
+		"message":   "successful receive alert notification message!",
+		"timeStamp": timeStamp,
 	})
 }
