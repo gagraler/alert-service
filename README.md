@@ -26,6 +26,11 @@ $ mysql -u root -p'123456' < alertService.sql
 $ nohup ./alertService >> alertService.log 2>&1 &
 ```
 
+#### build docker images
+```shell
+$ docker build -f ./build/Dockerfile .
+```
+
 ## HTTP API
 HTTP Api The unified prefix defaults to `/api/v1/alertService`
 
