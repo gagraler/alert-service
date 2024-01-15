@@ -9,7 +9,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"time"
 )
 
 /**
@@ -21,7 +20,7 @@ import (
 
 const LarkRobotURL = "https://open.larksuite.com/open-apis/bot/v2/hook/27562c31-1810-4c08-b2ef-344ad2b99648"
 
-// AlertMessageWebhookController 飞书机器人的路由
+// AlertMessageWebhookController 路由
 func AlertMessageWebhookController(c *gin.Context) {
 	var notification models.Notification
 
@@ -34,18 +33,58 @@ func AlertMessageWebhookController(c *gin.Context) {
 	}
 	slog.Info("received AlertManager alarm: ", notification)
 
-	// 根据alert manager的请求构造飞书消息的请求数据结构
-	larkRequest, err := handler.TransformHandler(notification)
+	switch notification.Status {
+	case "resolved":
+		handleResolvedAlert(c, notification)
+	case "firing":
+		handleFiringAlert(c, notification)
+	default:
+		slog.Info("unknown alert status, skip sending message to lark server")
+		c.JSON(http.StatusOK, gin.H{
+			"message": "unknown alert status, skip sending message to lark server",
+		})
+	}
+}
+
+// handleResolvedAlert 处理告警恢复的情况
+func handleResolvedAlert(c *gin.Context, notification models.Notification) {
+	larkReq, err := handler.AlertResolvedTransformHandle(notification)
 	if err != nil {
 		slog.Error("[ERROR] failed to transform alertManager notification: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
-	// 向飞书服务器发送POST请求
+	slog.Info("alert has been resolved, skip sending message to lark server")
+
+	sendMessageToLarkServer(c, larkReq)
+}
+
+// handleFiringAlert 处理告警触发的情况
+func handleFiringAlert(c *gin.Context, notification models.Notification) {
+	larkRequest, err := handler.AlertFiringTransformHandle(notification)
+	if err != nil {
+		// Handle the error
+		slog.Error("[ERROR] failed to transform alertManager notification: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	slog.Info("alert has been resolved, skip sending message to lark server")
+	sendMessageToLarkServer(c, larkRequest)
+}
+
+// sendMessageToLarkServer 发送消息到飞书机器人
+func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest) {
 	bytesData, _ := sonic.Marshal(larkRequest)
 	req, _ := http.NewRequest("POST", LarkRobotURL, bytes.NewReader(bytesData))
 	req.Header.Add("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
-	// 飞书服务器可能通信失败
+
 	if err != nil {
 		slog.Error("[ERROR] request to lark server failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -56,13 +95,14 @@ func AlertMessageWebhookController(c *gin.Context) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
+			// Handle the error
 		}
 	}(res.Body)
-	body, _ := io.ReadAll(res.Body)
 
+	body, _ := io.ReadAll(res.Body)
 	var larkResponse models.LarkResponse
 	err = sonic.Unmarshal(body, &larkResponse)
-	// 飞书服务器返回的包可能有问题
+
 	if err != nil {
 		slog.Error("[ERROR] failed to obtain response from lark server: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -72,9 +112,9 @@ func AlertMessageWebhookController(c *gin.Context) {
 	}
 
 	slog.Info("successfully sent message to lark server")
-	timeStamp := time.Now().Local().Format("2006-01-02 15:04:05")
 	c.JSON(http.StatusOK, gin.H{
-		"message":   "successful receive alert notification message!",
-		"timeStamp": timeStamp,
+		"code":    larkResponse.Code,
+		"message": larkResponse.Msg,
+		"data":    larkResponse.Data,
 	})
 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"github.com/keington/alertService/internel/biz/models"
+	"github.com/keington/alertService/internel/utils"
 	"strings"
 )
 
@@ -13,8 +14,8 @@ import (
  * @description: alert manager
  */
 
-// TransformHandler 根据告警类型，调用不同的处理函数
-func TransformHandler(notification models.Notification) (*models.LarkRequest, error) {
+// AlertFiringTransformHandle 根据告警类型，调用不同的处理函数
+func AlertFiringTransformHandle(notification models.Notification) (*models.LarkRequest, error) {
 	alertType := notification.CommonLabels.AlertType
 
 	switch alertType {
@@ -112,4 +113,48 @@ func buildLarkRequest(builder strings.Builder, alertName string) *models.LarkReq
 			},
 		},
 	}
+}
+
+// AlertResolvedTransformHandle 告警恢复
+func AlertResolvedTransformHandle(notification models.Notification) (*models.LarkRequest, error) {
+	var (
+		builder strings.Builder
+		layout  = "2006-01-02 15:04:05"
+	)
+
+	buildCommonContent(notification, &builder)
+	builder.WriteString(fmt.Sprintf("**告警状态:** %s\n", notification.Status))
+
+	// 每条告警逐个获取，拼接到一起
+	for _, alert := range notification.Alerts {
+		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
+		builder.WriteString(fmt.Sprintf("**告警规则:** %s\n", alert.Labels["alertname"]))
+		builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", alert.StartsAt.Format(layout)))
+		builder.WriteString(fmt.Sprintf("**恢复时间:** %s\n", alert.EndsAt.Format(layout)))
+		builder.WriteString(fmt.Sprintf("**持续时间:** %s\n", utils.ConvertDurationToReadable(alert.EndsAt.Sub(alert.StartsAt))))
+	}
+
+	larkReq := &models.LarkRequest{
+		MsgType: "interactive",
+		Card: models.Card{
+			Header: models.Header{
+				Title: models.Title{
+					Tag:     "plain_text",
+					Content: notification.Alerts[0].Labels["alertname"],
+				},
+				Template: "green",
+			},
+			Elements: []models.Elements{
+				{
+					Tag: "div",
+					Text: models.Text{
+						Content: builder.String(),
+						Tag:     "lark_md",
+					},
+				},
+			},
+		},
+	}
+
+	return larkReq, nil
 }
