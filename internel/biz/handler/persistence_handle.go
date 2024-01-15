@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/keington/alertService/internel/biz/models"
+	"github.com/keington/alertService/internel/utils"
 	"github.com/keington/alertService/pkg/database"
 	"log/slog"
-	"time"
 )
 
 /**
@@ -28,42 +27,10 @@ func PersistenceHandle(notification models.Notification) {
 	alertList.StartTime = notification.Alerts[0].StartsAt
 	alertList.EndTime = notification.Alerts[0].EndsAt
 	durationTime := notification.Alerts[0].EndsAt.Sub(notification.Alerts[0].StartsAt)
-	alertList.DurationTime = convertDurationToReadable(durationTime)
+	alertList.DurationTime = utils.ConvertDurationToReadable(durationTime)
 
 	if err := database.DB.Create(&alertList).Error; err != nil {
 		slog.Error("Failed to insert data into database", err.Error())
 		return
 	}
-}
-
-// convertDurationToReadable 将Duration转换为可读的格式
-func convertDurationToReadable(duration time.Duration) string {
-
-	days := int(duration.Hours() / 24)
-	hours := int(duration.Hours()) % 24
-	minutes := int(duration.Minutes()) % 60
-	seconds := int(duration.Seconds()) % 60
-	milliseconds := duration.Milliseconds() % 1000
-
-	var result string
-
-	if days > 0 {
-		result += fmt.Sprintf("%d天", days)
-	}
-	if hours > 0 {
-		result += fmt.Sprintf("%d小时", hours)
-	}
-	if minutes > 0 {
-		result += fmt.Sprintf("%d分钟", minutes)
-	}
-	if seconds > 0 {
-		result += fmt.Sprintf("%d秒", seconds)
-	}
-	if milliseconds > 0 {
-		result += fmt.Sprintf("%d毫秒", milliseconds)
-	}
-	if result == "" {
-		return "0秒"
-	}
-	return result
 }
