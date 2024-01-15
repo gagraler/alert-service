@@ -31,15 +31,15 @@ func TransformHandler(notification models.Notification) (*models.LarkRequest, er
 
 // buildCommonContent 公共部分的内容
 func buildCommonContent(notification models.Notification, builder *strings.Builder) {
-	builder.WriteString(fmt.Sprintf("告警级别: **%s**\n", notification.CommonLabels.Level))
-	builder.WriteString(fmt.Sprintf("环境: %s\n", notification.CommonLabels.Env))
+	builder.WriteString(fmt.Sprintf("**告警级别:** **%s**\n\t\t\t", notification.CommonLabels.Level))
+	builder.WriteString(fmt.Sprintf("**环境:** %s\n", notification.CommonLabels.Env))
 }
 
 // buildAlertContent 告警部分的内容
 func buildAlertContent(alert models.Alert, builder *strings.Builder) {
-	builder.WriteString(fmt.Sprintf("告警规则: %s\n", alert.Labels["alertname"]))
-	builder.WriteString(fmt.Sprintf("摘要: %s\n详情：%s\n", alert.Annotations.Summary, alert.Annotations.Description))
-	builder.WriteString(fmt.Sprintf("开始时间: %s\n", alert.StartsAt.Format("2006-01-02 15:04:05")))
+	builder.WriteString(fmt.Sprintf("**告警规则:** %s\nt\t\t", alert.Labels["alertname"]))
+	builder.WriteString(fmt.Sprintf("**摘要:** %s\nt\t\t详情：%s\n", alert.Annotations.Summary, alert.Annotations.Description))
+	builder.WriteString(fmt.Sprintf("**开始时间:** %s\nt\t\t", alert.StartsAt.Format("2006-01-02 15:04:05")))
 }
 
 // ContainerTransformHandler 容器告警
@@ -49,9 +49,9 @@ func ContainerTransformHandler(notification models.Notification) (*models.LarkRe
 
 	// 每条告警逐个获取，拼接到一起
 	for _, alert := range notification.Alerts {
-		builder.WriteString(fmt.Sprintf("命名空间: %s\n", alert.Labels["namespace"]))
-		builder.WriteString(fmt.Sprintf("实例: %s\n", alert.Labels["instance"]))
-		builder.WriteString(fmt.Sprintf("Service: %s\n", alert.Labels["service"]))
+		builder.WriteString(fmt.Sprintf("**命名空间:** %s\nt\t\t", alert.Labels["namespace"]))
+		builder.WriteString(fmt.Sprintf("**实例:** %s\nt\t\t", alert.Labels["instance"]))
+		builder.WriteString(fmt.Sprintf("**Service:** %s\nt\t\t", alert.Labels["service"]))
 		buildAlertContent(alert, &builder)
 	}
 
@@ -66,8 +66,8 @@ func HostTransformHandler(notification models.Notification) (*models.LarkRequest
 
 	// 每条告警逐个获取，拼接到一起
 	for _, alert := range notification.Alerts {
-		builder.WriteString(fmt.Sprintf("主机名称: %s\n", alert.Labels["hostname"]))
-		builder.WriteString(fmt.Sprintf("实例: %s\n", alert.Labels["instance"]))
+		builder.WriteString(fmt.Sprintf("**主机名称:** %s\nt\t\t", alert.Labels["hostname"]))
+		builder.WriteString(fmt.Sprintf("**实例:** %s\nt\t\t", alert.Labels["instance"]))
 		buildAlertContent(alert, &builder)
 	}
 
@@ -82,7 +82,7 @@ func MiddleWareTransformHandler(notification models.Notification) (*models.LarkR
 
 	// 每条告警逐个获取，拼接到一起
 	for _, alert := range notification.Alerts {
-		builder.WriteString(fmt.Sprintf("实例: %s\n", alert.Labels["instance"]))
+		builder.WriteString(fmt.Sprintf("**实例:** %s\nt\t\t", alert.Labels["instance"]))
 		buildAlertContent(alert, &builder)
 	}
 
