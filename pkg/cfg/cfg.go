@@ -16,10 +16,11 @@ import (
  * @description: 基于viper封装常用的配置文件读取方法
  */
 
-type Config struct {
+type Configurator interface {
+	LoadConfigStruct()
 }
 
-func InitCfg(path, name, cfgType string, cfg interface{}) (config interface{}, err error) {
+func InitCfg(path, name, cfgType string, cfg Configurator) (config Configurator, err error) {
 	vCfg := viper.New()
 	vCfg.AddConfigPath(path)
 	vCfg.SetConfigName(name)
@@ -40,6 +41,8 @@ func InitCfg(path, name, cfgType string, cfg interface{}) (config interface{}, e
 	if err := vCfg.Unmarshal(&cfg); err != nil {
 		return cfg, fmt.Errorf("failed to unmarshal cfg file: %v", err)
 	}
+
+	cfg.LoadConfigStruct()
 
 	return cfg, err
 }
