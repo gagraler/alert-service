@@ -1,13 +1,11 @@
-lark_web_hook_url = ""
-
 [database]
 dsn = "root:123456@tcp(localhost:3306)/alert-service?charset=utf8mb4&parseTime=True&loc=Local"
 # max open connections
-max_open_conn = 200
+maxOpenConn = 200
 # max idle connections
-max_idle_conn = 100
+maxIdleConn = 100
 # unit: s
 # The maximum time a connection can be reused
-max_life_time = 5000
+maxLifeTime = 5000
 #
-max_idle_time = 5000
+maxIdleTime = 5000

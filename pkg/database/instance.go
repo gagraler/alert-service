@@ -21,8 +21,8 @@ var DB *gorm.DB
 // Config DataBaseConfig GORM
 type Config struct {
 	DSN         string
-	MaxOpenCon  int
-	MaxIdleCon  int
+	MaxOpenConn int
+	MaxIdleConn int
 	MaxLifetime int
 	MaxIdleTime int
 }
@@ -45,8 +45,8 @@ func NewDatabase(c *Config) (*gorm.DB, error) {
 	}
 
 	// 设置连接池大小
-	sqlDB.SetMaxOpenConns(c.MaxOpenCon)
-	sqlDB.SetMaxIdleConns(c.MaxIdleCon)
+	sqlDB.SetMaxOpenConns(c.MaxOpenConn)
+	sqlDB.SetMaxIdleConns(c.MaxIdleConn)
 	sqlDB.SetConnMaxLifetime(time.Duration(c.MaxLifetime) * time.Second)
 	sqlDB.SetConnMaxIdleTime(time.Duration(c.MaxIdleTime) * time.Second)
 
