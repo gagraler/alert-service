@@ -2,6 +2,7 @@ package controller
 
 import (
 	"bytes"
+	"flag"
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
 	"github.com/keington/alertService/internel/biz/handler"
@@ -17,6 +18,8 @@ import (
  * @file: alert_message_webhook_controller.go
  * @description: lark_webhook_router
  */
+
+var hookUrl = flag.String("url", "https://localhost", "lark bot url")
 
 const LarkRobotURL = "https://open.larksuite.com/open-apis/bot/v2/hook/27562c31-1810-4c08-b2ef-344ad2b99648"
 
@@ -67,7 +70,7 @@ func handleFiringAlert(c *gin.Context, notification models.Notification) {
 	larkRequest, err := handler.AlertFiringTransformHandle(notification)
 	if err != nil {
 		// Handle the error
-		slog.Error("[ERROR] failed to transform alertManager notification: ", err)
+		slog.Error("failed to transform alertManager notification: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -80,13 +83,16 @@ func handleFiringAlert(c *gin.Context, notification models.Notification) {
 
 // sendMessageToLarkServer 发送消息到飞书机器人
 func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest) {
+
+	// var hook conf.Hook
+
 	bytesData, _ := sonic.Marshal(larkRequest)
-	req, _ := http.NewRequest("POST", LarkRobotURL, bytes.NewReader(bytesData))
+	req, _ := http.NewRequest("POST", *hookUrl, bytes.NewReader(bytesData))
 	req.Header.Add("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 
 	if err != nil {
-		slog.Error("[ERROR] request to lark server failed: ", err)
+		slog.Error("request to lark server failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -104,7 +110,7 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest) {
 	err = sonic.Unmarshal(body, &larkResponse)
 
 	if err != nil {
-		slog.Error("[ERROR] failed to obtain response from lark server: ", err)
+		slog.Error("failed to obtain response from lark server: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})

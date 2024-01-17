@@ -34,8 +34,10 @@ type Card struct {
 
 // LarkRequest 飞书机器人支持的数据结构
 type LarkRequest struct {
-	MsgType string `json:"msg_type"`
-	Card    Card   `json:"card"`
+	TimeStamp string `json:"timestamp"`
+	Sign      string `json:"sign"`
+	MsgType   string `json:"msg_type"`
+	Card      Card   `json:"card"`
 }
 
 // LarkResponse 响应体相关

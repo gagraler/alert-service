@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"flag"
 	"fmt"
 	"github.com/keington/alertService/internel/biz/models"
 	"github.com/keington/alertService/internel/utils"
+	"strconv"
 	"strings"
+	"time"
 )
 
 /**
@@ -13,6 +16,8 @@ import (
  * @file: alert manager.go
  * @description: alert manager
  */
+
+var key = flag.String("key", "", "lark bot sign key")
 
 // AlertFiringTransformHandle 根据告警类型，调用不同的处理函数
 func AlertFiringTransformHandle(notification models.Notification) (*models.LarkRequest, error) {
@@ -134,8 +139,18 @@ func AlertResolvedTransformHandle(notification models.Notification) (*models.Lar
 		builder.WriteString(fmt.Sprintf("**持续时间:** %s\n", utils.ConvertDurationToReadable(alert.EndsAt.Sub(alert.StartsAt))))
 	}
 
+	var (
+		ts = time.Now().Unix()
+	)
+	sign, err := utils.GenSign(*key, ts)
+	if err != nil {
+		return nil, err
+	}
+
 	larkReq := &models.LarkRequest{
-		MsgType: "interactive",
+		TimeStamp: strconv.FormatInt(time.Now().Unix(), 10),
+		Sign:      sign,
+		MsgType:   "interactive",
 		Card: models.Card{
 			Header: models.Header{
 				Title: models.Title{
