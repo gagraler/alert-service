@@ -21,8 +21,6 @@ import (
 
 var hookUrl = flag.String("url", "https://localhost", "lark bot url")
 
-const LarkRobotURL = "https://open.larksuite.com/open-apis/bot/v2/hook/27562c31-1810-4c08-b2ef-344ad2b99648"
-
 // AlertMessageWebhookController 路由
 func AlertMessageWebhookController(c *gin.Context) {
 	var notification models.Notification
@@ -53,7 +51,7 @@ func AlertMessageWebhookController(c *gin.Context) {
 func handleResolvedAlert(c *gin.Context, notification models.Notification) {
 	larkReq, err := handler.AlertResolvedTransformHandle(notification)
 	if err != nil {
-		slog.Error("[ERROR] failed to transform alertManager notification: ", err)
+		slog.Error("failed to transform alertManager notification: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -62,12 +60,12 @@ func handleResolvedAlert(c *gin.Context, notification models.Notification) {
 
 	slog.Info("alert has been resolved, skip sending message to lark server")
 
-	sendMessageToLarkServer(c, larkReq)
+	sendMessageToLarkServer(c, larkReq, notification)
 }
 
 // handleFiringAlert 处理告警触发的情况
 func handleFiringAlert(c *gin.Context, notification models.Notification) {
-	larkRequest, err := handler.AlertFiringTransformHandle(notification)
+	larkReq, err := handler.AlertFiringTransformHandle(notification)
 	if err != nil {
 		// Handle the error
 		slog.Error("failed to transform alertManager notification: ", err)
@@ -78,19 +76,16 @@ func handleFiringAlert(c *gin.Context, notification models.Notification) {
 	}
 
 	slog.Info("alert has been resolved, skip sending message to lark server")
-	sendMessageToLarkServer(c, larkRequest)
+	sendMessageToLarkServer(c, larkReq, notification)
 }
 
 // sendMessageToLarkServer 发送消息到飞书机器人
-func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest) {
-
-	// var hook conf.Hook
+func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, notification models.Notification) {
 
 	bytesData, _ := sonic.Marshal(larkRequest)
 	req, _ := http.NewRequest("POST", *hookUrl, bytes.NewReader(bytesData))
 	req.Header.Add("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
-
 	if err != nil {
 		slog.Error("request to lark server failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -104,6 +99,9 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest) {
 			// Handle the error
 		}
 	}(res.Body)
+
+	// 持久化
+	go handler.PersistenceHandle(notification)
 
 	body, _ := io.ReadAll(res.Body)
 	var larkResponse models.LarkResponse
