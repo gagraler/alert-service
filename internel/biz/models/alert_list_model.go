@@ -17,6 +17,7 @@ type AlertList struct {
 	InstanceName string    `json:"instance_name" gorm:"instance_name"`
 	Description  string    `json:"description" gorm:"description"`
 	Promql       string    `json:"promql" gorm:"promql"`
+	Level        string    `json:"level" gorm:"level"`
 	Status       string    `json:"status" gorm:"status"`
 	StartTime    time.Time `json:"start_time" gorm:"start_time"`
 	EndTime      time.Time `json:"end_time" gorm:"end_time"`

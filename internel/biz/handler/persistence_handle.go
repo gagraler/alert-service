@@ -24,6 +24,7 @@ func PersistenceHandle(notification models.Notification) {
 	alertList.InstanceName = notification.Alerts[0].Labels["instance"]
 	alertList.Description = notification.Alerts[0].Annotations.Description
 	alertList.Promql = notification.CommonLabels.PromQL
+	alertList.Level = notification.CommonLabels.Level
 	alertList.Status = notification.Status
 	alertList.StartTime = notification.Alerts[0].StartsAt
 	alertList.EndTime = notification.Alerts[0].EndsAt
