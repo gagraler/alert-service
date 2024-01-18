@@ -5,14 +5,12 @@ on:
     inputs:
       branches:
         description: 'Branches'
+        default: 'main'
       target:
         description: 'Application Run Path'
         default: '/data/alertService'  # 设置默认值
   push:
     branches: [ "main" ]
-
-# Environment variables available to all jobs and steps in this workflow.
-env:
 
 permissions:
   contents: read
