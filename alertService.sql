@@ -1,23 +1,6 @@
-/*
- Navicat Premium Data Transfer
+CREATE DATABASE IF NOT EXISTS `alert-service` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
- Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 80025 (8.0.25)
- Source Host           : localhost:3306
- Source Schema         : alert-service
-
- Target Server Type    : MySQL
- Target Server Version : 80025 (8.0.25)
- File Encoding         : 65001
-
- Date: 14/01/2024 21:37:18
-*/
-
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
-CREATE DATABASE IF NOT EXISTS `alert_service` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE alert-service;
 
 -- ----------------------------
 -- Table structure for alert_list
