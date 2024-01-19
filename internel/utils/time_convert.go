@@ -39,7 +39,7 @@ func ConvertDurationToReadable(duration time.Duration) string {
 		result += fmt.Sprintf("%d毫秒", milliseconds)
 	}
 	if result == "" {
-		return "0秒"
+		return "-"
 	}
 	return result
 }
