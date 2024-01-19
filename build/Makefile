@@ -22,13 +22,13 @@ DOCKER_PASSWORD=
 # Builds the project for Linux
 # Build default is linux amd64
 build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_NAME)_$(BINARY_VERSION) -gcflags=-trimpath=$GOPATH -asmflags=-trimpath=$GOPATH -ldflags "-w -s" -v ./cmd
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_NAME)_$(BINARY_VERSION) -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) -ldflags "-w -s" -v ./cmd
 	@printf "$(GREEN)Arch: amd64\n$(NC)"
 	@printf "$(GREEN)OS: linux\n$(NC)"
 	@printf "$(GREEN)build success\n$(NC)"
 
 build_arm64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GOBUILD) -o $(BINARY_NAME)_$(BINARY_VERSION) -gcflags=-trimpath=$GOPATH -asmflags=-trimpath=$GOPATH -ldflags "-w -s" -v ./cmd
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GOBUILD) -o $(BINARY_NAME)_$(BINARY_VERSION) -gcflags=-trimpath=$(GOPATH) -asmflags=-trimpath=$(GOPATH) -ldflags "-w -s" -v ./cmd
 	@printf "$(GREEN)Arch: arm64\n$(NC)"
 	@printf "$(GREEN)OS: linux\n$(NC)"
 	@printf "$(GREEN)build success\n$(NC)"
