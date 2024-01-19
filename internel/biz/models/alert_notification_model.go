@@ -15,6 +15,7 @@ type Annotations struct {
 }
 
 type Alert struct {
+	Status      string            `json:"status"`
 	Labels      map[string]string `json:"labels"`
 	Annotations Annotations       `json:"annotations"`
 	StartsAt    time.Time         `json:"startsAt"`

@@ -34,7 +34,7 @@ func AlertMessageWebhookController(c *gin.Context) {
 	}
 	slog.Info("received AlertManager alarm: ", notification)
 
-	switch notification.Status {
+	switch notification.Alerts[0].Status {
 	case "resolved":
 		handleResolvedAlert(c, notification)
 	case "firing":
@@ -96,7 +96,7 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			// Handle the error
+			slog.Error("failed to close response body: ", err)
 		}
 	}(res.Body)
 
@@ -115,10 +115,11 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 		return
 	}
 
-	slog.Info("successfully sent message to lark server")
 	c.JSON(http.StatusOK, gin.H{
 		"code":    larkResponse.Code,
 		"message": larkResponse.Msg,
 		"data":    larkResponse.Data,
 	})
+
+	slog.Info("successfully sent message to lark server, result is: ", larkResponse)
 }
