@@ -23,22 +23,22 @@ DOCKER_PASSWORD=
 # Build default is linux amd64
 build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_NAME)_$(BINARY_VERSION) -gcflags=-trimpath=$GOPATH -asmflags=-trimpath=$GOPATH -ldflags "-w -s" -v ./cmd
-	@printf "$(GREEN)Arch: amd64$(NC)"
-	@printf "$(GREEN)OS: linux$(NC)"
-	@printf "$(GREEN)build success$(NC)"
+	@printf "$(GREEN)Arch: amd64\n$(NC)"
+	@printf "$(GREEN)OS: linux\n$(NC)"
+	@printf "$(GREEN)build success\n$(NC)"
 
 build_arm64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GOBUILD) -o $(BINARY_NAME)_$(BINARY_VERSION) -gcflags=-trimpath=$GOPATH -asmflags=-trimpath=$GOPATH -ldflags "-w -s" -v ./cmd
-	@printf "$(GREEN)Arch: arm64$(NC)"
-	@printf "$(GREEN)OS: linux$(NC)"
-	@printf "$(GREEN)build success$(NC)"
+	@printf "$(GREEN)Arch: arm64\n$(NC)"
+	@printf "$(GREEN)OS: linux\n$(NC)"
+	@printf "$(GREEN)build success\n$(NC)"
 
 # Builds the project for docker images
 build_docker:
 	docker build -t $(DOCKER_REGISTRY_URL)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
 	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) $(DOCKER_REGISTRY_URL)
 	docker push $(DOCKER_REGISTRY_URL)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)
-	@printf "build docker images success"
+	@printf "build docker images success\n"
 
 .PHONY: all test clean build build_arm64 build_docker
 
