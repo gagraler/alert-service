@@ -19,8 +19,8 @@ import (
 
 var key = flag.String("key", "", "lark bot sign key")
 
-// AlertFiringTransformHandle 根据告警类型，调用不同的处理函数
-func AlertFiringTransformHandle(notification models.Notification) (*models.LarkRequest, error) {
+// JudgeAlertType 根据告警类型，调用不同的处理函数
+func JudgeAlertType(notification models.Notification) (*models.LarkRequest, error) {
 	alertType := notification.CommonLabels.AlertType
 
 	switch alertType {
@@ -62,7 +62,7 @@ func ContainerTransformHandler(notification models.Notification) (*models.LarkRe
 	}
 
 	// 构造出飞书机器人所需的数据结构
-	return buildLarkRequest(builder, notification.Alerts[0].Labels["alertname"]), nil
+	return AlertFiringTransformHandle(builder, notification.Alerts[0].Labels["alertname"]), nil
 }
 
 // HostTransformHandler 主机告警
@@ -78,7 +78,7 @@ func HostTransformHandler(notification models.Notification) (*models.LarkRequest
 	}
 
 	// 构造出飞书机器人所需的数据结构
-	return buildLarkRequest(builder, notification.Alerts[0].Labels["alertname"]), nil
+	return AlertFiringTransformHandle(builder, notification.Alerts[0].Labels["alertname"]), nil
 }
 
 // MiddleWareTransformHandler 中间件告警
@@ -93,12 +93,23 @@ func MiddleWareTransformHandler(notification models.Notification) (*models.LarkR
 	}
 
 	// 构造出飞书机器人所需的数据结构
-	return buildLarkRequest(builder, notification.Alerts[0].Labels["alertname"]), nil
+	return AlertFiringTransformHandle(builder, notification.Alerts[0].Labels["alertname"]), nil
 }
 
-func buildLarkRequest(builder strings.Builder, alertName string) *models.LarkRequest {
+func AlertFiringTransformHandle(builder strings.Builder, alertName string) *models.LarkRequest {
+
+	var (
+		ts = time.Now().Unix()
+	)
+	sign, err := utils.GenSign(*key, ts)
+	if err != nil {
+		return nil
+	}
+
 	return &models.LarkRequest{
-		MsgType: "interactive",
+		TimeStamp: strconv.FormatInt(time.Now().Unix(), 10),
+		Sign:      sign,
+		MsgType:   "interactive",
 		Card: models.Card{
 			Header: models.Header{
 				Title: models.Title{
@@ -124,7 +135,6 @@ func buildLarkRequest(builder strings.Builder, alertName string) *models.LarkReq
 func AlertResolvedTransformHandle(notification models.Notification) (*models.LarkRequest, error) {
 	var (
 		builder strings.Builder
-		layout  = "2006-01-02 15:04:05"
 	)
 
 	buildCommonContent(notification, &builder)
@@ -134,8 +144,8 @@ func AlertResolvedTransformHandle(notification models.Notification) (*models.Lar
 	for _, alert := range notification.Alerts {
 		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
 		builder.WriteString(fmt.Sprintf("**告警规则:** %s\n", alert.Labels["alertname"]))
-		builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", alert.StartsAt.Format(layout)))
-		builder.WriteString(fmt.Sprintf("**恢复时间:** %s\n", alert.EndsAt.Format(layout)))
+		builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", utils.UTCTranLocal(alert.StartsAt)))
+		builder.WriteString(fmt.Sprintf("**恢复时间:** %s\n", utils.UTCTranLocal(alert.EndsAt)))
 		builder.WriteString(fmt.Sprintf("**持续时间:** %s\n", utils.ConvertDurationToReadable(alert.EndsAt.Sub(alert.StartsAt))))
 	}
 

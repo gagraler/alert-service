@@ -65,7 +65,7 @@ func handleResolvedAlert(c *gin.Context, notification models.Notification) {
 
 // handleFiringAlert 处理告警触发的情况
 func handleFiringAlert(c *gin.Context, notification models.Notification) {
-	larkReq, err := handler.AlertFiringTransformHandle(notification)
+	larkReq, err := handler.JudgeAlertType(notification)
 	if err != nil {
 		// Handle the error
 		slog.Error("failed to transform alertManager notification: ", err)
@@ -106,7 +106,6 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 	body, _ := io.ReadAll(res.Body)
 	var larkResponse models.LarkResponse
 	err = sonic.Unmarshal(body, &larkResponse)
-
 	if err != nil {
 		slog.Error("failed to obtain response from lark server: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -121,5 +120,5 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 		"data":    larkResponse.Data,
 	})
 
-	slog.Info("successfully sent message to lark server, result is: ", larkResponse)
+	slog.Info("request to lark server result is: ", larkResponse)
 }

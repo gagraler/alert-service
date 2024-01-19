@@ -8,7 +8,7 @@ import (
 /**
  * @author: x.gallagher.anderson@gmail.com
  * @time: 2024/1/15 21:41
- * @file: time_convert.go
+ * @file: time_trans.go
  * @description: time convert
  */
 
@@ -42,4 +42,10 @@ func ConvertDurationToReadable(duration time.Duration) string {
 		return "-"
 	}
 	return result
+}
+
+func UTCTranLocal(utcTime time.Time) string {
+
+	var layout = "2006-01-02 15:04:05"
+	return utcTime.Local().Format(layout)
 }
