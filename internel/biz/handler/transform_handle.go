@@ -45,7 +45,7 @@ func buildCommonContent(notification models.Notification, builder *strings.Build
 func buildAlertContent(alert models.Alert, builder *strings.Builder) {
 	builder.WriteString(fmt.Sprintf("**告警规则:** %s\n", alert.Labels["alertname"]))
 	builder.WriteString(fmt.Sprintf("**摘要:** %s\n**详情:** %s\n", alert.Annotations.Summary, alert.Annotations.Description))
-	builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", alert.StartsAt.Format("2006-01-02 15:04:05")))
+	builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", utils.UTCTranLocal(alert.StartsAt)))
 }
 
 // ContainerTransformHandler 容器告警
@@ -57,7 +57,7 @@ func ContainerTransformHandler(notification models.Notification) (*models.LarkRe
 	for _, alert := range notification.Alerts {
 		builder.WriteString(fmt.Sprintf("**命名空间:** %s\n", alert.Labels["namespace"]))
 		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
-		builder.WriteString(fmt.Sprintf("**Service:** %s\n", alert.Labels["service"]))
+		builder.WriteString(fmt.Sprintf("**PromQL:** %s\n", notification.CommonLabels.PromQL))
 		buildAlertContent(alert, &builder)
 	}
 
