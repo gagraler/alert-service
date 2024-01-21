@@ -60,6 +60,7 @@ func ContainerTransformHandler(notification models.Notification) (*models.LarkRe
 		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
 		builder.WriteString(fmt.Sprintf("**PromQL:** %s\n", notification.CommonLabels.PromQL))
 		buildAlertContent(alert, &builder)
+		builder.WriteString("\n")
 	}
 
 	// 构造出飞书机器人所需的数据结构
@@ -76,6 +77,7 @@ func HostTransformHandler(notification models.Notification) (*models.LarkRequest
 		builder.WriteString(fmt.Sprintf("**主机名称:** %s\n", alert.Labels["hostname"]))
 		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
 		buildAlertContent(alert, &builder)
+		builder.WriteString("\n")
 	}
 
 	// 构造出飞书机器人所需的数据结构
@@ -91,6 +93,7 @@ func MiddleWareTransformHandler(notification models.Notification) (*models.LarkR
 	for _, alert := range notification.Alerts {
 		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
 		buildAlertContent(alert, &builder)
+		builder.WriteString("\n")
 	}
 
 	// 构造出飞书机器人所需的数据结构
