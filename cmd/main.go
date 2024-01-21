@@ -1,12 +1,20 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"flag"
 	"github.com/gin-gonic/gin"
 	"github.com/keington/alertService/internel/controller"
 	"github.com/keington/alertService/pkg/cfg"
 	"github.com/keington/alertService/pkg/database"
+	"log"
+	"log/slog"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 /**
@@ -47,8 +55,30 @@ func main() {
 
 	controller.InitializeController(g)
 
-	err := g.Run("0.0.0.0:8588")
-	if err != nil {
-		os.Exit(0)
+	server := http.Server{
+		Addr:    "0.0.0.0:8588",
+		Handler: g,
 	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("server listen err:%s", err)
+		}
+	}()
+
+	//err := g.Run("0.0.0.0:8588")
+	//if err != nil {
+	//	os.Exit(0)
+	//}
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	<-quit
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatal("server shutdown error: ", err)
+	}
+	log.Println("service closing...")
 }
