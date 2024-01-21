@@ -12,9 +12,7 @@ $ git clone https://github.com/keington/alertService.git
 
 $ cd alertService
 
-$ cp build/Makefile ./
-
-$ make build
+$ make -f build/Makefile
 ```
 
 ### 2. run service
@@ -23,7 +21,7 @@ Please modify the contents in the configuration file before running the service
 ```shell
 $ mysql -u root -p'123456' < alertService.sql
 
-$ nohup ./alertService -url=lark_rul -key=secret_key >> alertService.log 2>&1 &
+$ nohup ./alertService -url=lark_rul -key=secret_key > alertService.log 2>&1 &
 ```
 
 #### build docker images
