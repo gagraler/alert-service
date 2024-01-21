@@ -1,11 +1,11 @@
-package models
+package entity
 
 import "time"
 
 /**
  * @author: x.gallagher.anderson@gmail.com
  * @time: 2024/1/14 20:28
- * @file: alert_list_model.go
+ * @file: alert_list_entity.go
  * @description:
  */
 

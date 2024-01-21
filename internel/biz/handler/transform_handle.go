@@ -46,6 +46,7 @@ func buildAlertContent(alert models.Alert, builder *strings.Builder) {
 	builder.WriteString(fmt.Sprintf("**告警规则:** %s\n", alert.Labels["alertname"]))
 	builder.WriteString(fmt.Sprintf("**摘要:** %s\n**详情:** %s\n", alert.Annotations.Summary, alert.Annotations.Description))
 	builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", utils.UTCTranLocal(alert.StartsAt)))
+	builder.WriteString("\n")
 }
 
 // ContainerTransformHandler 容器告警
@@ -106,7 +107,7 @@ func AlertFiringTransformHandle(builder strings.Builder, alertName string) *mode
 		return nil
 	}
 
-	return &models.LarkRequest{
+	firingReq := &models.LarkRequest{
 		TimeStamp: strconv.FormatInt(time.Now().Unix(), 10),
 		Sign:      sign,
 		MsgType:   "interactive",
@@ -129,6 +130,8 @@ func AlertFiringTransformHandle(builder strings.Builder, alertName string) *mode
 			},
 		},
 	}
+
+	return firingReq
 }
 
 // AlertResolvedTransformHandle 告警恢复
@@ -157,7 +160,7 @@ func AlertResolvedTransformHandle(notification models.Notification) (*models.Lar
 		return nil, err
 	}
 
-	larkReq := &models.LarkRequest{
+	resolvedReq := &models.LarkRequest{
 		TimeStamp: strconv.FormatInt(time.Now().Unix(), 10),
 		Sign:      sign,
 		MsgType:   "interactive",
@@ -181,5 +184,5 @@ func AlertResolvedTransformHandle(notification models.Notification) (*models.Lar
 		},
 	}
 
-	return larkReq, nil
+	return resolvedReq, nil
 }

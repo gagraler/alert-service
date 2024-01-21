@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/keington/alertService/internel/biz/models"
+	"github.com/keington/alertService/internel/biz/models/entity"
 	"github.com/keington/alertService/internel/utils"
 	"github.com/keington/alertService/pkg/database"
 	"log/slog"
@@ -15,7 +16,7 @@ import (
  */
 
 func PersistenceHandle(notification models.Notification) {
-	var alertList models.AlertList
+	var alertList entity.AlertList
 
 	// 构建插入数据对象
 	alertList.Env = notification.CommonLabels.Env
