@@ -153,6 +153,7 @@ func AlertResolvedTransformHandle(notification models.Notification) (*models.Lar
 		builder.WriteString(fmt.Sprintf("**开始时间:** %s\n", utils.UTCTranLocal(alert.StartsAt)))
 		builder.WriteString(fmt.Sprintf("**恢复时间:** %s\n", utils.UTCTranLocal(alert.EndsAt)))
 		builder.WriteString(fmt.Sprintf("**持续时间:** %s\n", utils.ConvertDurationToReadable(alert.EndsAt.Sub(alert.StartsAt))))
+		builder.WriteString("\n")
 	}
 
 	var (
