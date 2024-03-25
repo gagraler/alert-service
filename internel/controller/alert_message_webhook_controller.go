@@ -2,14 +2,15 @@ package controller
 
 import (
 	"bytes"
-	"flag"
+	"io"
+	"log/slog"
+	"net/http"
+	"os"
+
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
 	"github.com/keington/alertService/internel/biz/handler"
 	"github.com/keington/alertService/internel/biz/models"
-	"io"
-	"log/slog"
-	"net/http"
 )
 
 /**
@@ -19,7 +20,11 @@ import (
  * @description: lark_webhook_router
  */
 
-var hookUrl = flag.String("url", "https://localhost", "lark bot url")
+// var hookUrl = flag.String("url", "https://localhost", "lark bot url")
+
+var (
+	hookUrl = os.Getenv("LARK_BOT_URL")
+)
 
 // AlertMessageWebhookController 路由
 func AlertMessageWebhookController(c *gin.Context) {
@@ -83,7 +88,7 @@ func handleFiringAlert(c *gin.Context, notification models.Notification) {
 func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, notification models.Notification) {
 
 	bytesData, _ := sonic.Marshal(larkRequest)
-	req, _ := http.NewRequest("POST", *hookUrl, bytes.NewReader(bytesData))
+	req, _ := http.NewRequest("POST", hookUrl, bytes.NewReader(bytesData))
 	req.Header.Add("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {

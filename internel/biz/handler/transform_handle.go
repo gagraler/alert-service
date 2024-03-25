@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"flag"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -18,7 +18,11 @@ import (
  * @description: alert manager
  */
 
-var key = flag.String("key", "", "lark bot sign key")
+// var key = flag.String("key", "", "lark bot sign key")
+
+var (
+	key = os.Getenv("LARK_BOT_SIGN_KEY")
+)
 
 // JudgeAlertType 根据告警类型，调用不同的处理函数
 func JudgeAlertType(notification models.Notification) (*models.LarkRequest, error) {
@@ -106,7 +110,7 @@ func AlertFiringTransformHandle(builder strings.Builder, alertName string) *mode
 	var (
 		ts = time.Now().Unix()
 	)
-	sign, err := utils.GenSign(*key, ts)
+	sign, err := utils.GenSign(key, ts)
 	if err != nil {
 		return nil
 	}
@@ -160,7 +164,7 @@ func AlertResolvedTransformHandle(notification models.Notification) (*models.Lar
 	var (
 		ts = time.Now().Unix()
 	)
-	sign, err := utils.GenSign(*key, ts)
+	sign, err := utils.GenSign(key, ts)
 	if err != nil {
 		return nil, err
 	}
