@@ -3,11 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"flag"
-	"github.com/gin-gonic/gin"
-	"github.com/keington/alertService/internel/controller"
-	"github.com/keington/alertService/pkg/cfg"
-	"github.com/keington/alertService/pkg/database"
 	"log"
 	"log/slog"
 	"net/http"
@@ -15,6 +10,11 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/keington/alertService/internel/controller"
+	"github.com/keington/alertService/pkg/cfg"
+	"github.com/keington/alertService/pkg/database"
 )
 
 /**
@@ -32,7 +32,6 @@ func (c *AlertServiceConfig) LoadConfigStruct() {
 }
 
 func init() {
-	flag.Parse()
 
 	config := &AlertServiceConfig{}
 

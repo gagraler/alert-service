@@ -7,5 +7,6 @@ maxIdleConn = 100
 # unit: s
 # The maximum time a connection can be reused
 maxLifeTime = 5000
-#
+# unit: s
+# The maximum time a connection can be idle
 maxIdleTime = 5000

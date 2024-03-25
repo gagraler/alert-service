@@ -21,12 +21,14 @@ Please modify the contents in the configuration file before running the service
 ```shell
 $ mysql -u root -p'123456' < alertService.sql
 
-$ nohup ./alertService -url=lark_rul -key=secret_key > alertService.log 2>&1 &
+$ export LARK_BOT_SIGN_KEY=secret_key
+$ export LARK_BOT_URL=lark_url
+$ nohup ./alertService > alertService.log 2>&1 &
 ```
 
 #### build docker images
 ```shell
-$ docker build -f ./build/Dockerfile .
+$ docker build -f ./build/Dockerfile -t alertservice:v1.0.1 .
 ```
 
 ## HTTP API
