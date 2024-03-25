@@ -3,11 +3,12 @@ package handler
 import (
 	"flag"
 	"fmt"
-	"github.com/keington/alertService/internel/biz/models"
-	"github.com/keington/alertService/internel/utils"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/keington/alertService/internel/biz/models"
+	"github.com/keington/alertService/internel/utils"
 )
 
 /**
@@ -56,7 +57,7 @@ func ContainerTransformHandler(notification models.Notification) (*models.LarkRe
 
 	// 每条告警逐个获取，拼接到一起
 	for _, alert := range notification.Alerts {
-		builder.WriteString(fmt.Sprintf("**命名空间:** %s\n", alert.Labels["namespace"]))
+		builder.WriteString(fmt.Sprintf("**命名空间/Pod:** %s:%s\n", alert.Labels["namespace"], alert.Labels["pod"]))
 		builder.WriteString(fmt.Sprintf("**实例:** %s\n", alert.Labels["instance"]))
 		builder.WriteString(fmt.Sprintf("**PromQL:** %s\n", notification.CommonLabels.PromQL))
 		buildAlertContent(alert, &builder)

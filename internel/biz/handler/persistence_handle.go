@@ -1,11 +1,12 @@
 package handler
 
 import (
+	"log/slog"
+
 	"github.com/keington/alertService/internel/biz/models"
 	"github.com/keington/alertService/internel/biz/models/entity"
 	"github.com/keington/alertService/internel/utils"
 	"github.com/keington/alertService/pkg/database"
-	"log/slog"
 )
 
 /**
@@ -32,7 +33,7 @@ func PersistenceHandle(notification models.Notification) {
 	alertList.DurationTime = utils.ConvertDurationToReadable(durationTime)
 
 	if err := database.DB.Create(&alertList).Error; err != nil {
-		slog.Error("Failed to insert data into database", err.Error())
+		slog.Error("Failed to insert data into database", err)
 		return
 	}
 }
