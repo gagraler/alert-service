@@ -29,6 +29,13 @@ $ nohup ./alertService > alertService.log 2>&1 &
 #### build docker images
 ```shell
 $ docker build -f ./build/Dockerfile -t alertservice:v1.0.1 .
+
+$ docker run -d \
+    -e LARK_BOT_SIGN_KEY=secret_key \
+    -e LARK_BOT_URL=lark_url \
+    -p 8588:8588 \
+    alertservice:v1.0.1
+    -v /etc/alertService.toml:/opt/alertService.toml
 ```
 
 ## HTTP API
