@@ -20,8 +20,6 @@ import (
  * @description: lark_webhook_router
  */
 
-// var hookUrl = flag.String("url", "https://localhost", "lark bot url")
-
 var (
 	hookUrl = os.Getenv("LARK_BOT_URL")
 )
