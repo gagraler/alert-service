@@ -1,58 +1,44 @@
 {
-  "receiver": "WebHook",
-  "status": "firing",
-  "alerts": [
+  "Receiver": "webhook",
+  "Status": "firing",
+  "Alerts": [
     {
-      "status": "firing",
-      "labels": {
-        "alertname": "rules_test",
-        "container": "grafana",
-        "endpoint": "http",
-        "grafana_folder": "Default",
-        "instance": "10.0.45.205:3000",
-        "job": "grafana",
+      "Status": "firing",
+      "Labels": {
+        "alertname": "NodeSystemSaturation",
+        "container": "kube-rbac-proxy",
+        "endpoint": "https",
+        "instance": "ip-10-0-15-225.ap-southeast-1.compute.internal",
+        "job": "node-exporter",
         "namespace": "monitoring",
-        "pod": "grafana-f59c687b-5jqvw",
-        "service": "grafana"
+        "pod": "node-exporter-tthm4",
+        "prometheus": "monitoring/k8s",
+        "service": "node-exporter",
+        "severity": "warning"
       },
-      "annotations": {},
-      "startsAt": "2024-01-11T16:15:00Z",
-      "endsAt": "0001-01-01T00:00:00Z",
-      "generatorURL": "http://localhost:3000/alerting/grafana/f7488033-0dd1-4cfb-8bfc-0ef776bbb099/view?orgId=1",
-      "fingerprint": "d7c74f5059ae78ad",
-      "silenceURL": "http://localhost:3000/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Drules_test&matcher=container%3Dgrafana&matcher=endpoint%3Dhttp&matcher=grafana_folder%3DDefault&matcher=instance%3D10.0.45.205%3A3000&matcher=job%3Dgrafana&matcher=namespace%3Dmonitoring&matcher=pod%3Dgrafana-f59c687b-5jqvw&matcher=service%3Dgrafana&orgId=1",
-      "dashboardURL": "",
-      "panelURL": "",
-      "values": {
-        "A": 1,
-        "B": 1,
-        "C": 1
+      "Annotations": {
+        "Summary": "System saturated, load per core is very high.",
+        "Description": "System load per core at ip-10-0-15-225.ap-southeast-1.compute.internal has been above 2 for the last 15 minutes, is currently at 2.37.\nThis might indicate this instance resources saturation and can cause it becoming unresponsive."
       },
-      "valueString": "[ var='A' labels={__name__=up, container=grafana, endpoint=http, instance=10.0.45.205:3000, job=grafana, namespace=monitoring, pod=grafana-f59c687b-5jqvw, service=grafana} value=1 ], [ var='B' labels={__name__=up, container=grafana, endpoint=http, instance=10.0.45.205:3000, job=grafana, namespace=monitoring, pod=grafana-f59c687b-5jqvw, service=grafana} value=1 ], [ var='C' labels={__name__=up, container=grafana, endpoint=http, instance=10.0.45.205:3000, job=grafana, namespace=monitoring, pod=grafana-f59c687b-5jqvw, service=grafana} value=1 ]"
+      "StartsAt": "2024-05-15 09:23:53.428 +0000 UTC",
+      "EndsAt": "0001-01-01 00:00:00 +0000 UTC"
     }
   ],
-  "groupLabels": {
-    "alertname": "rules_test",
-    "grafana_folder": "Default"
+  "GroupLabels": {
+    "alertname": "NodeSystemSaturation"
   },
-  "commonLabels": {
-    "alertname": "rules_test",
-    "container": "grafana",
-    "endpoint": "http",
-    "grafana_folder": "Default",
-    "instance": "10.0.45.205:3000",
-    "job": "grafana",
-    "namespace": "monitoring",
-    "pod": "grafana-f59c687b-5jqvw",
-    "service": "grafana"
+  "CommonLabels": {
+    "Env": "",
+    "Level": "",
+    "PromQL": "",
+    "AlertType": ""
   },
-  "commonAnnotations": {},
-  "externalURL": "http://localhost:3000/",
-  "version": "1",
-  "groupKey": "{}:{alertname=\"rules_test\", grafana_folder=\"Default\"}",
-  "truncatedAlerts": 0,
-  "orgId": 1,
-  "title": "[FIRING:1] rules_test Default (grafana http 10.0.45.205:3000 grafana monitoring grafana-f59c687b-5jqvw grafana)",
-  "state": "alerting",
-  "message": "**Firing**\n\nValue: A=1, B=1, C=1\nLabels:\n - alertname = rules_test\n - container = grafana\n - endpoint = http\n - grafana_folder = Default\n - instance = 10.0.45.205:3000\n - job = grafana\n - namespace = monitoring\n - pod = grafana-f59c687b-5jqvw\n - service = grafana\nAnnotations:\nSource: http://localhost:3000/alerting/grafana/f7488033-0dd1-4cfb-8bfc-0ef776bbb099/view?orgId=1\nSilence: http://localhost:3000/alerting/silence/new?alertmanager=grafana&matcher=alertname%3Drules_test&matcher=container%3Dgrafana&matcher=endpoint%3Dhttp&matcher=grafana_folder%3DDefault&matcher=instance%3D10.0.45.205%3A3000&matcher=job%3Dgrafana&matcher=namespace%3Dmonitoring&matcher=pod%3Dgrafana-f59c687b-5jqvw&matcher=service%3Dgrafana&orgId=1\n"
+  "CommonAnnotations": {
+    "description": "System load per core at ip-10-0-15-225.ap-southeast-1.compute.internal has been above 2 for the last 15 minutes, is currently at 2.37.\nThis might indicate this instance resources saturation and can cause it becoming unresponsive.",
+    "runbook_url": "https://runbooks.prometheus-operator.dev/runbooks/node/nodesystemsaturation",
+    "summary": "System saturated, load per core is very high."
+  },
+  "ExternalURL": "http://alertmanager-main-0:9093",
+  "Version": 4,
+  "GroupKey": "{}{alertname=\"NodeSystemSaturation\"}"
 }
