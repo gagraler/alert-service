@@ -1,6 +1,6 @@
 FROM golang:1.21 as builder
 
-LABEL org.opencontainers.image.source="https://github.com/gagraler/alert-service"
+LABEL org.opencontainers.image.source = "https://github.com/gagraler/alert-service"
 
 COPY . /tmp/alert-service
 

@@ -25,6 +25,6 @@ jobs:
               
       - name: Build the Docker image
         run: | 
-          IMAGE_TAG=ghcr.io/gagraler/alert-service:$(git rev-parse --short HEAD)
+          IMAGE_TAG=ghcr.io/gagraler/alert-service:$(git rev-parse --short HEAD)_$(date +'%Y%m%d')
           docker build . -f ./build/Dockerfile --tag $IMAGE_TAG
           docker push $IMAGE_TAG

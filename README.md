@@ -10,7 +10,7 @@ AlertManager service for Prometheus
 ```shell
 $ git clone https://github.com/gagraler/alert-service.git
 
-$ cd alertService
+$ cd alert-service
 
 $ make -f build/Makefile
 ```
@@ -23,18 +23,18 @@ $ mysql -u root -p'123456' < alert-service.sql
 
 $ export LARK_BOT_SIGN_KEY=secret_key
 $ export LARK_BOT_URL=lark_url
-$ nohup ./alertService > alertService.log 2>&1 &
+$ nohup ./alert-service > alert-service.log 2>&1 &
 ```
 
 #### build docker images
 ```shell
-$ docker build -f ./build/Dockerfile -t alert-service:v1.0.1 .
+$ docker pull ghcr.io/gagraler/alert-service:latest
 
 $ docker run -d \
     -e LARK_BOT_SIGN_KEY=secret_key \
     -e LARK_BOT_URL=lark_url \
     -p 8588:8588 \
-    alert-service:v1.0.1
+    alert-service
     -v /etc/alert-service.toml:/opt/alert-service.toml
 ```
 
