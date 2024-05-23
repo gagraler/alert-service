@@ -6,7 +6,7 @@ WORKDIR /tmp/alertService/
 
 ENV GOPROXY http://goproxy.cn
 
-RUN go mod vendor
+RUN go mod tidy
 
 RUN go build -o alertService ./cmd
 
