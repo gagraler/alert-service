@@ -1,4 +1,4 @@
-module github.com/keington/alertService
+module github.com/gagraler/alert-service
 
 go 1.21
 
