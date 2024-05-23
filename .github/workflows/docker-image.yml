@@ -26,4 +26,4 @@ jobs:
       - name: Build the Docker image
         run: | 
           docker build . -f ./build/Dockerfile --tag alert-service:$(git rev-parse --short HEAD)
-          docker push ghcr.io/gagraler/alert-service:latest
+          docker push ghcr.io/gagraler/alert-service:$(git rev-parse --short HEAD)
