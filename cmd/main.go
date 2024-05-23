@@ -35,7 +35,7 @@ func init() {
 
 	config := &AlertServiceConfig{}
 
-	_, err := cfg.InitCfg("./conf.d", "alertService", "toml", config)
+	_, err := cfg.InitCfg("./conf.d", "alert-service", "toml", config)
 	if err != nil {
 		os.Exit(0)
 	}
