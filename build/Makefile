@@ -9,8 +9,8 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 
 # Binary names
-BINARY_NAME=alertService
-BINARY_VERSION=v1.0.1_release
+BINARY_NAME=alert-ervice
+BINARY_VERSION=$(shell git rev-parse --short HEAD)
 
 # docker parameters
 DOCKER_IMAGE_NAME=alertService
