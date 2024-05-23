@@ -8,7 +8,7 @@ AlertManager service for Prometheus
 ## How to use
 ### 1. compile service
 ```shell
-$ git clone https://github.com/keington/alertService.git
+$ git clone https://github.com/gagraler/alert-service.git
 
 $ cd alertService
 
@@ -19,7 +19,7 @@ $ make -f build/Makefile
 Please modify the contents in the configuration file before running the service
 
 ```shell
-$ mysql -u root -p'123456' < alertService.sql
+$ mysql -u root -p'123456' < alert-service.sql
 
 $ export LARK_BOT_SIGN_KEY=secret_key
 $ export LARK_BOT_URL=lark_url
@@ -28,13 +28,13 @@ $ nohup ./alertService > alertService.log 2>&1 &
 
 #### build docker images
 ```shell
-$ docker build -f ./build/Dockerfile -t alertservice:v1.0.1 .
+$ docker build -f ./build/Dockerfile -t alert-service:v1.0.1 .
 
 $ docker run -d \
     -e LARK_BOT_SIGN_KEY=secret_key \
     -e LARK_BOT_URL=lark_url \
     -p 8588:8588 \
-    alertservice:v1.0.1
+    alert-service:v1.0.1
     -v /etc/alertService.toml:/opt/alertService.toml
 ```
 
@@ -95,4 +95,4 @@ $ curl --location 'http://localhost:8588/api/v1/alertService/alertMessage/hook' 
 ## License and Copyright
 [MIT](https://choosealicense.com/licenses/mit/)
 
-- Email: x.gallagher.anderson@gmail.com
+- Email: gagral@sina.com
