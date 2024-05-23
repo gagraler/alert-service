@@ -35,7 +35,7 @@ $ docker run -d \
     -e LARK_BOT_URL=lark_url \
     -p 8588:8588 \
     alert-service:v1.0.1
-    -v /etc/alertService.toml:/opt/alertService.toml
+    -v /etc/alert-service.toml:/opt/alert-service.toml
 ```
 
 ## HTTP API
