@@ -11,10 +11,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gagraler/alert-service/internel/controller"
+	"github.com/gagraler/alert-service/pkg/cfg"
+	"github.com/gagraler/alert-service/pkg/database"
 	"github.com/gin-gonic/gin"
-	"github.com/keington/alertService/internel/controller"
-	"github.com/keington/alertService/pkg/cfg"
-	"github.com/keington/alertService/pkg/database"
 )
 
 /**

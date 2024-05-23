@@ -8,9 +8,9 @@ import (
 	"os"
 
 	"github.com/bytedance/sonic"
+	"github.com/gagraler/alert-service/internel/biz/handler"
+	"github.com/gagraler/alert-service/internel/biz/models"
 	"github.com/gin-gonic/gin"
-	"github.com/keington/alertService/internel/biz/handler"
-	"github.com/keington/alertService/internel/biz/models"
 )
 
 /**

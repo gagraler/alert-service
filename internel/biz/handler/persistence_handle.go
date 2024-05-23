@@ -3,10 +3,10 @@ package handler
 import (
 	"log/slog"
 
-	"github.com/keington/alertService/internel/biz/models"
-	"github.com/keington/alertService/internel/biz/models/entity"
-	"github.com/keington/alertService/internel/utils"
-	"github.com/keington/alertService/pkg/database"
+	"github.com/gagraler/alert-service/internel/biz/models"
+	"github.com/gagraler/alert-service/internel/biz/models/entity"
+	"github.com/gagraler/alert-service/internel/utils"
+	"github.com/gagraler/alert-service/pkg/database"
 )
 
 /**
