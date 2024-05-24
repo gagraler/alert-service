@@ -68,7 +68,10 @@ func handleResolvedAlert(c *gin.Context, notification models.Notification) {
 
 // handleFiringAlert 处理告警触发的情况
 func handleFiringAlert(c *gin.Context, notification models.Notification) {
-	larkReq, err := handler.JudgeAlertType(notification)
+
+	req := new(handler.AlertTemplate)
+
+	larkReq, err := req.RenderingAlertTemplate(notification)
 	if err != nil {
 		// Handle the error
 		slog.Error("failed to transform alertManager notification: ", err)
