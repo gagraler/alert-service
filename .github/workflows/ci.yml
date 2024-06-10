@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Alert Service CI
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
           registry: ghcr.io
           username: ${{github.actor}}
           password: ${{secrets.TOKEN}}
-              
+
       - name: Build the Docker image
         run: | 
           IMAGE_TAG=ghcr.io/gagraler/alert-service:$(git rev-parse --short HEAD)_$(date +'%Y%m%d')
