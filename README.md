@@ -23,7 +23,7 @@ $ mysql -u root -p'123456' < alert-service.sql
 
 $ export LARK_BOT_SIGN_KEY=secret_key
 $ export LARK_BOT_URL=lark_url
-$ nohup ./alert-service > alert-service.log 2>&1 &
+$ nohup ./alert-service > alert-service.logger 2>&1 &
 ```
 
 #### build docker images

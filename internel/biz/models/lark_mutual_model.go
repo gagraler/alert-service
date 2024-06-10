@@ -1,7 +1,7 @@
 package models
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/11 21:45
  * @file: lark_mutual_model.go
  * @description: 飞书交互的数据结构

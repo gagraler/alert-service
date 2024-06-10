@@ -1,16 +1,15 @@
 package handler
 
 import (
-	"log/slog"
-
 	"github.com/gagraler/alert-service/internel/biz/models"
 	"github.com/gagraler/alert-service/internel/biz/models/entity"
 	"github.com/gagraler/alert-service/internel/utils"
 	"github.com/gagraler/alert-service/pkg/database"
+	"github.com/gagraler/alert-service/pkg/logger"
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/14 20:41
  * @file: persistence_handle.go
  * @description:
@@ -18,6 +17,7 @@ import (
 
 func PersistenceHandle(notification models.Notification) {
 	var alertList entity.AlertList
+	log := logger.SugaredLogger()
 
 	// 构建插入数据对象
 	alertList.Env = notification.CommonLabels.Env
@@ -33,7 +33,7 @@ func PersistenceHandle(notification models.Notification) {
 	alertList.DurationTime = utils.ConvertDurationToReadable(durationTime)
 
 	if err := database.DB.Create(&alertList).Error; err != nil {
-		slog.Error("Failed to insert data into database", err)
+		log.Error("Failed to insert data into database", err)
 		return
 	}
 }

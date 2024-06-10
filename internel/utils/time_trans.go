@@ -6,7 +6,7 @@ import (
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/15 21:41
  * @file: time_trans.go
  * @description: time convert

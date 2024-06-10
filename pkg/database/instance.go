@@ -10,7 +10,7 @@ import (
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2023/11/10 23:48
  * @file: instance.go
  * @description: 数据库连接

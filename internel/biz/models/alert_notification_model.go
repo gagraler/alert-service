@@ -3,7 +3,7 @@ package models
 import "time"
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/11 21:43
  * @file: alert_notification_model.go
  * @description: 告警通知的数据结构
