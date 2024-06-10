@@ -3,7 +3,7 @@ package controller
 import "github.com/gin-gonic/gin"
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/12 15:35
  * @file: controller.go
  * @description: 路由

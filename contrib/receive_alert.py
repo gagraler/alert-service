@@ -1,6 +1,6 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
-# author:  x.gallagher.anderson@gmail.com
+# author:  gagral.x@gmail.com
 # time: 2024/1/11 21:45
 # description: This script is used to receive alert struct from AlertManager
 
@@ -11,12 +11,12 @@ app = Flask(__name__)
 
 @app.route("/api/receive", methods=["POST"])
 def receive_handler():
-    
-    """ 
+
+    """
      Receive alert struct from AlertManager
      @return: Alert data struct
      """
-    
+
     data = request.get_json()
     print("Alert data struct:\n", data)
 

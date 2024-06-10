@@ -24,6 +24,6 @@ WORKDIR /opt/alert-service
 COPY --from=builder /tmp/alert-service/alert-service /opt/alert-service/alert-service
 COPY --from=builder /tmp/alert-service/conf.d/alert-service.toml /opt/alert-service/conf.d/
 
-EXPOSE 8588
+EXPOSE 8988
 
 ENTRYPOINT ["./alert-service"]

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"bytes"
+	"github.com/gagraler/alert-service/pkg/logger"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 
@@ -14,7 +14,7 @@ import (
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/11 22:24
  * @file: alert_message_webhook_controller.go
  * @description: lark_webhook_router
@@ -22,20 +22,22 @@ import (
 
 var (
 	hookUrl = os.Getenv("LARK_BOT_URL")
+	log     = logger.SugaredLogger()
 )
 
 // AlertMessageWebhookController 路由
 func AlertMessageWebhookController(c *gin.Context) {
+
 	var notification models.Notification
 
 	err := c.ShouldBindJSON(&notification)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": err,
 		})
 		return
 	}
-	slog.Info("received AlertManager alarm: ", notification)
+	log.Debugf("received AlertManager alarm: %s", notification)
 
 	switch notification.Alerts[0].Status {
 	case "resolved":
@@ -43,7 +45,7 @@ func AlertMessageWebhookController(c *gin.Context) {
 	case "firing":
 		handleFiringAlert(c, notification)
 	default:
-		slog.Info("unknown alert status, skip sending message to lark server")
+		log.Info("unknown alert status, skip sending message to lark server")
 		c.JSON(http.StatusOK, gin.H{
 			"message": "unknown alert status, skip sending message to lark server",
 		})
@@ -54,14 +56,14 @@ func AlertMessageWebhookController(c *gin.Context) {
 func handleResolvedAlert(c *gin.Context, notification models.Notification) {
 	larkReq, err := handler.AlertResolvedTransformHandle(notification)
 	if err != nil {
-		slog.Error("failed to transform alertManager notification: ", err)
+		log.Errorf("failed to transform alertManager notification: %s", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	slog.Info("alert has been resolved, skip sending message to lark server")
+	log.Info("alert has been resolved, skip sending message to lark server")
 
 	sendMessageToLarkServer(c, larkReq, notification)
 }
@@ -70,18 +72,18 @@ func handleResolvedAlert(c *gin.Context, notification models.Notification) {
 func handleFiringAlert(c *gin.Context, notification models.Notification) {
 
 	req := new(handler.AlertTemplate)
-
+	log.Infof("%s the alert status is: %s", notification.GroupLabels["alertname"], notification.Status)
 	larkReq, err := req.RenderingAlertTemplate(notification)
 	if err != nil {
 		// Handle the error
-		slog.Error("failed to transform alertManager notification: ", err)
+		log.Error("failed to transform alertManager notification: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-
-	slog.Info("alert has been resolved, skip sending message to lark server")
+	log.Infof("%s the alert is firing and starts sending messages to the lark server", notification.GroupLabels["alertname"])
+	log.Infof("alert startAt: %v", notification.Alerts[0].StartsAt)
 	sendMessageToLarkServer(c, larkReq, notification)
 }
 
@@ -93,7 +95,7 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 	req.Header.Add("content-type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		slog.Error("request to lark server failed: ", err)
+		log.Error("request to lark server failed: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -102,7 +104,7 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			slog.Error("failed to close response body: ", err)
+			log.Error("failed to close response body: ", err)
 		}
 	}(res.Body)
 
@@ -110,10 +112,10 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 	go handler.PersistenceHandle(notification)
 
 	body, _ := io.ReadAll(res.Body)
-	var larkResponse models.LarkResponse
-	err = sonic.Unmarshal(body, &larkResponse)
+	var larkRes models.LarkResponse
+	err = sonic.Unmarshal(body, &larkRes)
 	if err != nil {
-		slog.Error("failed to obtain response from lark server: ", err)
+		log.Error("failed to obtain response from lark server: ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -121,10 +123,10 @@ func sendMessageToLarkServer(c *gin.Context, larkRequest *models.LarkRequest, no
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":    larkResponse.Code,
-		"message": larkResponse.Msg,
-		"data":    larkResponse.Data,
+		"code":    larkRes.Code,
+		"message": larkRes.Msg,
+		"data":    larkRes.Data,
 	})
 
-	slog.Info("request to lark server result is: ", larkResponse)
+	log.Infof("%s alert request to lark server result, code: %v, message: %s", notification.GroupLabels["alertname"], larkRes.Code, larkRes.Msg)
 }

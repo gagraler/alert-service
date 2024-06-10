@@ -8,7 +8,7 @@ import (
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/17 20:33
  * @file: gen_sign.go
  * @description: lark sign gen

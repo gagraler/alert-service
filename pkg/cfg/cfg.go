@@ -2,7 +2,7 @@ package cfg
 
 import (
 	"fmt"
-	"log/slog"
+	"github.com/gagraler/alert-service/pkg/logger"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -10,17 +10,15 @@ import (
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2023/11/20 20:44
  * @file: cfg.go
  * @description: 基于viper封装常用的配置文件读取方法
  */
 
-type Configurator interface {
-	LoadConfigStruct()
-}
+var log = logger.SugaredLogger()
 
-func InitCfg(path, name, cfgType string, cfg Configurator) (config Configurator, err error) {
+func InitCfg(path, name, cfgType string, cfg interface{}) (config interface{}, err error) {
 	vCfg := viper.New()
 	vCfg.AddConfigPath(path)
 	vCfg.SetConfigName(name)
@@ -33,7 +31,7 @@ func InitCfg(path, name, cfgType string, cfg Configurator) (config Configurator,
 	// 配置动态改变时，回调函数
 	vCfg.WatchConfig()
 	vCfg.OnConfigChange(func(e fsnotify.Event) {
-		slog.Info("The configuration changes, re -analyze the configuration file: ", e.Name)
+		log.Info("The configuration changes, re -analyze the configuration file: ", e.Name)
 		if err := vCfg.Unmarshal(&cfg); err != nil {
 			_ = fmt.Errorf("failed to unmarshal cfg file: %v", err)
 		}
@@ -42,7 +40,7 @@ func InitCfg(path, name, cfgType string, cfg Configurator) (config Configurator,
 		return cfg, fmt.Errorf("failed to unmarshal cfg file: %v", err)
 	}
 
-	cfg.LoadConfigStruct()
+	log.Infof("config path: %s/%s.%s", path, name, cfgType)
 
 	return cfg, err
 }

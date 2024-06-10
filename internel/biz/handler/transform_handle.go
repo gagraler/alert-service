@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"bytes"
 	"embed"
 	_ "embed"
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 	"text/template"
 	"time"
 
@@ -15,13 +15,13 @@ import (
 )
 
 /**
- * @author: x.gallagher.anderson@gmail.com
+ * @author: gagral.x@gmail.com
  * @time: 2024/1/11 22:22
  * @file: alert manager.go
  * @description: alert manager
  */
 
-//go:embed alert_notification.tmpl
+//go:embed tmpl/alert_notification.tmpl
 var tmplFS embed.FS
 
 var (
@@ -33,6 +33,7 @@ type AlertTemplate struct {
 	AlertLevel  string
 	Env         string
 	NameSpace   string
+	Job         string
 	Pod         string
 	PromQL      string
 	Summary     string
@@ -43,31 +44,32 @@ type AlertTemplate struct {
 func (a *AlertTemplate) RenderingAlertTemplate(notification models.Notification) (*models.LarkRequest, error) {
 
 	a.AlertName = notification.Alerts[0].Labels["alertname"]
-	a.AlertLevel = notification.CommonLabels.Level
+	a.AlertLevel = notification.Alerts[0].Labels["severity"]
 	a.Env = notification.CommonLabels.Env
 	a.NameSpace = notification.Alerts[0].Labels["namespace"]
 	a.Pod = notification.Alerts[0].Labels["pod"]
+	a.Job = notification.Alerts[0].Labels["job"]
 	a.PromQL = notification.CommonLabels.PromQL
 	a.Summary = notification.Alerts[0].Annotations.Summary
 	a.Description = notification.Alerts[0].Annotations.Description
 	a.StartsAt = notification.Alerts[0].StartsAt
 
-	tmpl, err := template.ParseFS(tmplFS, "alert_notification.tmpl")
+	tmpl, err := template.ParseFS(tmplFS, "tmpl/alert_notification.tmpl")
 	if err != nil {
 		return &models.LarkRequest{}, fmt.Errorf("failed to parse template: %v", err)
 	}
 
-	var configBuffer strings.Builder
+	var configBuffer bytes.Buffer
 
 	// writer buffer
-	if err := tmpl.Execute(&configBuffer, a); err != nil {
+	if err := tmpl.ExecuteTemplate(&configBuffer, "AlertTemplate", a); err != nil {
 		return &models.LarkRequest{}, fmt.Errorf("failed to render template: %v", err)
 	}
 
-	return AlertFiringTransformHandle(configBuffer, notification.Alerts[0].Labels["alertname"]), nil
+	return AlertFiringTransformHandle(configBuffer, a.AlertName), nil
 }
 
-func AlertFiringTransformHandle(builder strings.Builder, alertName string) *models.LarkRequest {
+func AlertFiringTransformHandle(buffer bytes.Buffer, alertName string) *models.LarkRequest {
 
 	var (
 		ts = time.Now().Unix()
@@ -93,7 +95,7 @@ func AlertFiringTransformHandle(builder strings.Builder, alertName string) *mode
 				{
 					Tag: "div",
 					Text: models.Text{
-						Content: builder.String(),
+						Content: buffer.String(),
 						Tag:     "lark_md",
 					},
 				},
