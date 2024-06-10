@@ -12,7 +12,9 @@ $ git clone https://github.com/gagraler/alert-service.git
 
 $ cd alert-service
 
-$ make -f build/Makefile
+$ make -f build/Makefile 
+$         or 
+$ docker build . -f ./build/Dockerfile
 ```
 
 ### 2. run service
@@ -23,8 +25,23 @@ $ mysql -u root -p'123456' < alert-service.sql
 
 $ export LARK_BOT_SIGN_KEY=secret_key
 $ export LARK_BOT_URL=lark_url
-$ nohup ./alert-service > alert-service.logger 2>&1 &
+$ nohup ./alert-service > alert-service.log 2>&1 &
 ```
+
+> LARK_BOT_SIGN_KEY and LARK_BOT_URL is required environment variables
+
+#### other optional environment variables
+| key             | default value | description                                |
+|-----------------|---------------|--------------------------------------------|
+| LOG_PATH        | logs          | log file path                              |
+| LOG_MAX_SIZE    | 100           | log arch size                              |
+| LOG_MAX_BACKUPS | 30            | log arch backups                           |
+| LOG_MAX_AGE     | 7             | log arch age                               |
+| LOG_LEVEL       | info          | log level                                  |
+| LOG_OUTPUT      | stdout        | log output, supported: stdout, file, kafka |
+| LOG_MODE        | prod          | log mode, supported: dev, prod             |
+| KAFKA_BROKERS   | NULL          | kafka brokers                              |
+| KAFKA_TOPIC     | NULL          | kafka topic                                |
 
 #### build docker images
 ```shell
