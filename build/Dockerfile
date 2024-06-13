@@ -10,7 +10,9 @@ ENV GOPROXY http://goproxy.cn
 
 RUN go mod tidy
 
-RUN go build -o alert-service ./cmd
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} go build -a -o alert-service ./cmd
+
+# RUN go build -o alert-service ./cmd
 
 FROM alpine:3.14
 
