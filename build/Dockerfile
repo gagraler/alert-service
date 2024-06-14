@@ -23,7 +23,7 @@ RUN mkdir -p /opt/alert-service/config
 
 WORKDIR /opt/alert-service
 
-COPY --from=builder /tmp/alert-service/alert-service /opt/alert-service/alert-service
+COPY alert-service /opt/alert-service/alert-service
 COPY --from=builder /tmp/alert-service/conf.d/alert-service.toml /opt/alert-service/conf.d/
 
 EXPOSE 8988
