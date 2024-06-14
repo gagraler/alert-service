@@ -1,9 +1,9 @@
-package handler
+package handle
 
 import (
-	"github.com/gagraler/alert-service/internel/biz/models"
-	"github.com/gagraler/alert-service/internel/biz/models/entity"
-	"github.com/gagraler/alert-service/internel/utils"
+	"github.com/gagraler/alert-service/internal/model"
+	"github.com/gagraler/alert-service/internal/model/entity"
+	"github.com/gagraler/alert-service/internal/util"
 	"github.com/gagraler/alert-service/pkg/database"
 	"github.com/gagraler/alert-service/pkg/logger"
 )
@@ -11,11 +11,11 @@ import (
 /**
  * @author: gagral.x@gmail.com
  * @time: 2024/1/14 20:41
- * @file: persistence_handle.go
+ * @file: alert_persistence_handle.go
  * @description:
  */
 
-func PersistenceHandle(notification models.Notification) {
+func PersistenceHandle(notification model.Notification) {
 	var alertList entity.AlertList
 	log := logger.SugaredLogger()
 
@@ -30,7 +30,7 @@ func PersistenceHandle(notification models.Notification) {
 	alertList.StartTime = notification.Alerts[0].StartsAt
 	alertList.EndTime = notification.Alerts[0].EndsAt
 	durationTime := notification.Alerts[0].EndsAt.Sub(notification.Alerts[0].StartsAt)
-	alertList.DurationTime = utils.ConvertDurationToReadable(durationTime)
+	alertList.DurationTime = util.ConvertDurationToReadable(durationTime)
 
 	if err := database.DB.Create(&alertList).Error; err != nil {
 		log.Error("Failed to insert data into database", err)

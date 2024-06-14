@@ -18,7 +18,7 @@ var (
 	once        sync.Once
 )
 
-// LogLevel defines the severity of a logger message.
+// LogLevel defines the severity of a logger internal.
 type LogLevel int8
 
 const (

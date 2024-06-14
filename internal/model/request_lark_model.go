@@ -1,9 +1,9 @@
-package models
+package model
 
 /**
  * @author: gagral.x@gmail.com
  * @time: 2024/1/11 21:45
- * @file: lark_mutual_model.go
+ * @file: request_lark_model.go
  * @description: 飞书交互的数据结构
  */
 

@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gagraler/alert-service/internel/controller"
+	"github.com/gagraler/alert-service/internal/controller"
 	"github.com/gagraler/alert-service/pkg/cfg"
 	"github.com/gagraler/alert-service/pkg/database"
 	"github.com/gagraler/alert-service/pkg/logger"
@@ -44,11 +44,12 @@ func init() {
 
 func main() {
 
-	log := logger.SugaredLogger()
 	gin.SetMode(gin.ReleaseMode)
 	g := gin.New()
 
 	controller.InitializeController(g)
+
+	log := logger.SugaredLogger()
 
 	server := http.Server{
 		Addr:    "0.0.0.0:8988",

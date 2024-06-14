@@ -105,7 +105,7 @@ $ curl --location 'http://localhost:8588/api/v1/alertService/alertMessage/hook' 
     "orgId":1,
     "title":"[FIRING:1] TestAlert Grafana ",
     "state":"alerting",
-    "message":"**Firing**\n\nValue: [no value]\nLabels:\n - alertname = TestAlert\n - instance = Grafana\nAnnotations:\n - summary = Notification test\nSilence: http://localhost:3000/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DTestAlert&matcher=instance%3DGrafana\n"
+    "internal":"**Firing**\n\nValue: [no value]\nLabels:\n - alertname = TestAlert\n - instance = Grafana\nAnnotations:\n - summary = Notification test\nSilence: http://localhost:3000/alerting/silence/new?alertmanager=grafana&matcher=alertname%3DTestAlert&matcher=instance%3DGrafana\n"
 }'
 ```
 
