@@ -3,7 +3,7 @@ module github.com/gagraler/alert-service
 go 1.21
 
 require (
-	github.com/bytedance/sonic v1.11.6
+	github.com/bytedance/sonic v1.11.8
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible

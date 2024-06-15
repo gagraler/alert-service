@@ -1,9 +1,10 @@
 package controller
 
 import (
-	handler2 "github.com/gagraler/alert-service/internal/handle"
+	"github.com/bytedance/sonic"
+	"github.com/gagraler/alert-service/internal/handle"
 	"github.com/gagraler/alert-service/internal/message"
-	models2 "github.com/gagraler/alert-service/internal/model"
+	"github.com/gagraler/alert-service/internal/model"
 	"github.com/gagraler/alert-service/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,7 +22,7 @@ var log = logger.SugaredLogger()
 // AlertMessageWebhookController 路由
 func AlertMessageWebhookController(c *gin.Context) {
 
-	var notification models2.Notification
+	var notification model.Notification
 
 	err := c.ShouldBindJSON(&notification)
 	if err != nil {
@@ -30,9 +31,17 @@ func AlertMessageWebhookController(c *gin.Context) {
 		})
 		return
 	}
-	log.Debugf("received AlertManager alarm: %s", notification)
 
-	req := new(handler2.AlertTemplate)
+	notificationJSON, err := sonic.MarshalString(notification)
+	if err != nil {
+		log.Errorf("Failed to marshal notification to JSON: %v", err)
+	} else {
+		log.Debugf("Received AlertManager alarm: %s", string(notificationJSON))
+	}
+
+	//log.Debugf("received AlertManager alarm: %s", c.Params)
+
+	req := new(handle.AlertTemplate)
 	log.Infof("%s the alert status is: %s", notification.GroupLabels["alertname"], notification.Status)
 	larkReq, err := req.BuildingAlertTemplate(notification)
 	if err != nil {

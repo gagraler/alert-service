@@ -46,11 +46,13 @@ func (a *AlertTemplate) BuildingAlertTemplate(notification models2.Notification)
 
 	a.AlertName = notification.Alerts[0].Labels["alertname"]
 	a.AlertLevel = notification.Alerts[0].Labels["severity"]
-	a.Env = notification.CommonLabels.Env
+	// a.Env = notification.CommonLabels.Env
+	a.Env = notification.Alerts[0].Labels["env"]
 	a.NameSpace = notification.Alerts[0].Labels["namespace"]
 	a.Pod = notification.Alerts[0].Labels["pod"]
 	a.Job = notification.Alerts[0].Labels["job"]
-	a.PromQL = notification.CommonLabels.PromQL
+	// a.PromQL = notification.CommonLabels.PromQL
+	a.PromQL = notification.Alerts[0].Labels["expr"]
 	a.Summary = notification.Alerts[0].Annotations.Summary
 	a.Description = notification.Alerts[0].Annotations.Description
 	a.StartsAt = notification.Alerts[0].StartsAt
