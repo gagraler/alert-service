@@ -43,7 +43,7 @@ func AlertMessageWebhookController(c *gin.Context) {
 
 	req := new(handle.AlertTemplate)
 	log.Infof("%s the alert status is: %s", notification.GroupLabels["alertname"], notification.Status)
-	larkReq, err := req.BuildingAlertTemplate(notification)
+	larkReqs, err := req.BuildingAlertTemplate(notification)
 	if err != nil {
 		// Handle the error
 		log.Error("failed to transform alertManager notification: ", err)
@@ -52,7 +52,14 @@ func AlertMessageWebhookController(c *gin.Context) {
 		})
 		return
 	}
-	log.Infof("%s the alert is firing and starts sending messages to the lark server", notification.GroupLabels["alertname"])
-	log.Infof("alert startAt: %v", notification.Alerts[0].StartsAt)
-	message.SendMessageToLarkServer(c, larkReq, notification)
+
+	for _, larkReq := range larkReqs {
+		log.Infof("%s the alert is firing and starts sending messages to the lark server", notification.GroupLabels["alertname"])
+		log.Infof("alert startAt: %v", notification.Alerts[0].StartsAt)
+		message.SendMessageToLarkServer(c, larkReq, notification)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Alerts processed successfully",
+	})
 }

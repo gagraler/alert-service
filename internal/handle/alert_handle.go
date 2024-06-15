@@ -5,7 +5,7 @@ import (
 	"embed"
 	_ "embed"
 	"fmt"
-	models2 "github.com/gagraler/alert-service/internal/model"
+	"github.com/gagraler/alert-service/internal/model"
 	"os"
 	"strconv"
 	"text/template"
@@ -30,6 +30,7 @@ var (
 
 type AlertTemplate struct {
 	AlertName   string
+	AlertStatus string
 	AlertLevel  string
 	Env         string
 	NameSpace   string
@@ -42,45 +43,54 @@ type AlertTemplate struct {
 }
 
 // BuildingAlertTemplate 构建告警模板
-func (a *AlertTemplate) BuildingAlertTemplate(notification models2.Notification) (*models2.LarkRequest, error) {
+func (a *AlertTemplate) BuildingAlertTemplate(notification model.Notification) ([]*model.LarkRequest, error) {
 
-	a.AlertName = notification.Alerts[0].Labels["alertname"]
-	a.AlertLevel = notification.Alerts[0].Labels["severity"]
-	// a.Env = notification.CommonLabels.Env
-	a.Env = notification.Alerts[0].Labels["env"]
-	a.NameSpace = notification.Alerts[0].Labels["namespace"]
-	a.Pod = notification.Alerts[0].Labels["pod"]
-	a.Job = notification.Alerts[0].Labels["job"]
-	// a.PromQL = notification.CommonLabels.PromQL
-	a.PromQL = notification.Alerts[0].Labels["expr"]
-	a.Summary = notification.Alerts[0].Annotations.Summary
-	a.Description = notification.Alerts[0].Annotations.Description
-	a.StartsAt = notification.Alerts[0].StartsAt
+	var req []*model.LarkRequest
 
-	tmpl, err := template.ParseFS(tmplFS, "tmpl/alert_notification.tmpl")
-	if err != nil {
-		return &models2.LarkRequest{}, fmt.Errorf("failed to parse template: %v", err)
+	for _, v := range notification.Alerts {
+		a.AlertName = v.Labels["alertname"]
+		a.AlertStatus = v.Status
+		a.AlertLevel = v.Labels["severity"]
+		a.Env = v.Labels["env"]
+		a.NameSpace = v.Labels["namespace"]
+		a.Pod = v.Labels["pod"]
+		a.Job = v.Labels["job"]
+		a.PromQL = v.Labels["expr"]
+		a.Summary = v.Annotations.Summary
+		a.Description = v.Annotations.Description
+		a.StartsAt = v.StartsAt
+
+		tmpl, err := template.ParseFS(tmplFS, "tmpl/alert_notification.tmpl")
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse template: %v", err)
+		}
+
+		var configBuffer bytes.Buffer
+
+		// writer buffer
+		if err := tmpl.ExecuteTemplate(&configBuffer, "AlertTemplate", a); err != nil {
+			return nil, fmt.Errorf("failed to render template: %v", err)
+		}
+
+		handle := AlertHandle(configBuffer, a.AlertName)
+		if v.Status == "firing" {
+			handle.Card.Header.Template = "red"
+		} else {
+			handle.Card.Header.Template = "green"
+		}
+
+		req = append(req, handle)
 	}
 
-	var configBuffer bytes.Buffer
-
-	// writer buffer
-	if err := tmpl.ExecuteTemplate(&configBuffer, "AlertTemplate", a); err != nil {
-		return &models2.LarkRequest{}, fmt.Errorf("failed to render template: %v", err)
+	if len(req) == 0 {
+		return nil, fmt.Errorf("no alerts found in the notification")
 	}
 
-	handle := AlertHandle(configBuffer, a.AlertName)
-	if notification.Status == "firing" {
-		handle.Card.Header.Template = "red"
-	} else {
-		handle.Card.Header.Template = "green"
-	}
-
-	return handle, nil
+	return req, nil
 }
 
 // AlertHandle 告警处理
-func AlertHandle(buffer bytes.Buffer, alertName string) *models2.LarkRequest {
+func AlertHandle(buffer bytes.Buffer, alertName string) *model.LarkRequest {
 
 	var (
 		ts = time.Now().Unix()
@@ -90,22 +100,22 @@ func AlertHandle(buffer bytes.Buffer, alertName string) *models2.LarkRequest {
 		return nil
 	}
 
-	alertReq := &models2.LarkRequest{
+	alertReq := &model.LarkRequest{
 		TimeStamp: strconv.FormatInt(time.Now().Unix(), 10),
 		Sign:      sign,
 		MsgType:   "interactive",
-		Card: models2.Card{
-			Header: models2.Header{
-				Title: models2.Title{
+		Card: model.Card{
+			Header: model.Header{
+				Title: model.Title{
 					Tag:     "plain_text",
 					Content: alertName,
 				},
 				Template: "red",
 			},
-			Elements: []models2.Elements{
+			Elements: []model.Elements{
 				{
 					Tag: "div",
-					Text: models2.Text{
+					Text: model.Text{
 						Content: buffer.String(),
 						Tag:     "lark_md",
 					},

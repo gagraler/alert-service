@@ -1,4 +1,5 @@
 {{- define "AlertTemplate" -}}
+**<font color="black">告警状态: </font>** {{ .AlertStatus }}
 **<font color="black">告警级别: </font>** {{ .AlertLevel }}
 **<font color="black">环境: </font>** {{ .Env }}
 **<font color="black">命名空间/Job: </font>** {{ .NameSpace }} / {{ .Job }}
