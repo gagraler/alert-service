@@ -36,7 +36,7 @@ type AlertTemplate struct {
 	NameSpace   string
 	Job         string
 	Pod         string
-	PromQL      string
+	Expr        string
 	Summary     string
 	Description string
 	StartsAt    time.Time
@@ -55,7 +55,7 @@ func (a *AlertTemplate) BuildingAlertTemplate(notification model.Notification) (
 		a.NameSpace = v.Labels["namespace"]
 		a.Pod = v.Labels["pod"]
 		a.Job = v.Labels["job"]
-		a.PromQL = v.Labels["expr"]
+		a.Expr = v.Labels["expr"]
 		a.Summary = v.Annotations.Summary
 		a.Description = v.Annotations.Description
 		a.StartsAt = v.StartsAt
